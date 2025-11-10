@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+body {
+  background-color: #282c34;  
+}
+
+  .container {
+    display: block;
+    width:100%;
+    height:100%; 
+    padding: .5em;
+  }
+
+    .left-side {
+      display: inline-block;
+      width: 12em;
+      height:30em; 
+      overflow: hidden;
+      padding: .5em;
+    }
+
+      .left-side div {
+        display: block;   
+        width:auto;
+        height:19em;  
+        margin-top: 1.1em;
+        background-image: url("image/agent-larry-hart.jpg");
+        background-repeat: no-repeat;
+        background-position: -4.5em 1em;
+        background-size: 16.5em 25em; 
+      }
+
+        .left-side div label {
+          color:#FFFFFF; 
+          font-size: .94em;
+          font-family: "Open Sans", "sans-serif";
+          font-weight: bolder;
+          position: relative;
+          top:-1.4em;
+        }
+
+    .right-side {
+      display: inline-block;
+      width: 44%;
+      height: auto;
+      padding: .85em;
+    }
+
+      .App-header {
+        padding-top: 1.5em;
+        padding-left: 1.5em;  
+        display: flex;
+        flex-direction: column;
+        height:25em;
+        overflow-y:auto;
+      }
+
+        label.label-user, 
+        label.label-ai {
+          display: block;
+          position: relative;
+          top: -1.4em;
+          left: -.9em;
+          color: #FFFFFF;
+          font-size: .94em;
+          font-family: "Open Sans", "sans-serif";
+          line-height: 2em;
+          padding-bottom: .77em;    
+        }
+
+      .input-area {
+        display: contents;
+        background-color: #282c34;
+        height:2.5em;
+        padding-left: 1.5em;  
+      }
+
+        .input-area input[type="text"] {
+          border: 0.24em solid gray;
+        }
+
+        .input-area input[type="text"]::placeholder {
+          color: #FFFFFF;
+        }
+
+        .input-area input {
+          font-size: .94em;
+          font-family: "Open Sans", "sans-serif";
+          width:77%;
+          padding: .65em
+        }
