@@ -7,7 +7,7 @@ import uuid
 import requests
 
 def generate_ai_image(prompt, save_path):
-    # make unique prompts
+    # make unique prompt
     prompt += str(uuid.uuid4())  
     formatted_prompt = prompt.replace(" ", "-")
 
