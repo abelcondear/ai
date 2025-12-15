@@ -29,7 +29,7 @@ def generate_ai_image(prompt, save_path):
                 with open(image_save_path, 'wb') as f:
                     f.write(response.content)
                 
-                # Crop watermark and/or artifacts
+                # crop watermark/artifacts
                 image = Image.open(image_save_path)
                 image = image.crop((0, 0, image.width, image.height - 48))
 
@@ -37,7 +37,7 @@ def generate_ai_image(prompt, save_path):
                 cropped_image.save(image_save_path)
 
                 # show generated image using default 
-                # image operating system visor
+                # image visor
                 print(f"Showing image {image_save_path} ...")
                 image.show()
 
