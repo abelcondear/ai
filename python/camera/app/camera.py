@@ -3,15 +3,21 @@ import torchvision
 import cv2
 import torchvision.transforms as transforms
 
+from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from threading import Thread
 from time import sleep
 
-def thread_create_window(c2):
+# this function is used as a thread
+def create_window(c2):
     # load a pre-trained model
     print("Load model")
 
-    model = fasterrcnn_resnet50_fpn(pretrained=True)
+    model = fasterrcnn_resnet50_fpn\
+            (
+                weights=FasterRCNN_ResNet50_FPN_Weights.COCO_V1
+            )
+
     model.eval()
 
     print("Done")
@@ -80,7 +86,7 @@ def thread_create_window(c2):
     print("Done")    
     print("")
 
-    print("Show camera")
+    print("Show window")
 
     c2.startWindowThread()
 
@@ -90,10 +96,20 @@ def thread_create_window(c2):
     print("Done")
     print("")
 
-    if cv2.waitKey(0) == ord('q'):
-        print("Exit camera and window")
+    # exit camera 
+    print("Exit camera")
 
-        cap.release()
+    cap.release()
+
+    print("Done")
+    print("")
+
+    if cv2.waitKey(0) == ord('q'):
+        print("Exit window")
+
+        if cap.isOpened():
+            cap.release()
+
         c2.destroyAllWindows()
 
         print("Done")
@@ -101,26 +117,30 @@ def thread_create_window(c2):
     else:
         print("Pause")
 
-        sleep(5) # make a pause 
+        sleep(1.5) # make a pause 
 
         print("Done")
         print("")
 
-        print("Exit camera and window")
+        print("Exit window")
 
-        cap.release()
+        if cap.isOpened():
+            cap.release()
+
         c2.destroyAllWindows()
 
         print("Done")
         print("")
 
 if __name__ == "__main__":    
+    print("")
+
     while True:
         print("Create Thread")
 
         thread = Thread\
                 (
-                    target = thread_create_window, 
+                    target = create_window, 
                     args = (cv2, )
                 )
 
