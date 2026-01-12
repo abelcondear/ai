@@ -2,6 +2,7 @@ import numpy as np
 import math as mt
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import csv
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' #avoid info and warning messages
@@ -10,13 +11,10 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
-
-import csv
-
 from sklearn.utils import Bunch
 
 def load_dataset():    
-    with open(r'dataset.csv') as csv_file:
+    with open(r'data/dataset.csv') as csv_file:
         data_reader = csv.reader(csv_file)
 
         feature_names = next(data_reader)[:-1]
@@ -47,7 +45,13 @@ y = ds.target
 
 y_encoded = to_categorical(y)
 
-training = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+training = train_test_split\
+(
+    X, 
+    y_encoded, 
+    test_size=0.2, 
+    random_state=42
+)
 
 (
     X_train, 
@@ -63,6 +67,7 @@ relu = Dense\
     input_shape=(5,), 
     activation='relu'
 )   
+
 softmax = Dense\
 (
     3, 
@@ -92,7 +97,7 @@ history = model.fit\
     verbose=0
 )
 
-sample = np.array\
+raw_dataset = np.array\
 (
     [
         [
@@ -107,8 +112,7 @@ sample = np.array\
     ]   
 )
 
-
-prediction = model.predict(sample, verbose=0)
+prediction = model.predict(raw_dataset, verbose=0)
 predicted_class = np.argmax(prediction)
 
 print("")
@@ -118,17 +122,19 @@ print("1        Software Engineer")
 print("2        Lead Team")
 
 print("")
-print("Dataset Sample [ Without Target ]:", sample)
+print("Dataset - Single Raw [ Without Target ]:", raw_dataset)
 
 print("")
 class_arr = np.array\
-([
-    'Speaking',
-    'Formal',
-    'Clever',
-    'Helpful',
-    'Creative'
-])
+(
+    [
+        'Speaking',
+        'Formal',
+        'Clever',
+        'Helpful',
+        'Creative'
+    ]
+)
 print("Features:", class_arr)
 
 print("")
@@ -139,11 +145,13 @@ print("")
 print("Predicted Probabilities [ Softmax Output ] [ Values ]:", prediction)
 
 porcentage = lambda t: str(mt.floor(t * 100)) + "%"
-vfunc = np.vectorize(porcentage)
+map_values = np.vectorize(porcentage)
 
 print("")
-print("Predicted Probabilities [ Softmax Output ] [ Percent ]:", vfunc(prediction))
+print("Predicted Probabilities [ Softmax Output ] [ Percent ]:", map_values(prediction))
 
 print("")
 class_names = ["Graphical Designer", "Software Engineer", "Lead Team"]
 print("Predicted Class:", class_names[predicted_class])
+
+print("")
