@@ -98,5 +98,7 @@ for item in message_list:
       "log": CmdLog
    })
 
+   print("")
+
 print("Done.")
 print("")
