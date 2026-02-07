@@ -6,8 +6,8 @@ client = Client\
     host='http://127.0.0.1:11434',
     headers=\
     {
-      'Authorization': 'DEV AAAA...',
-      'Content-Type': 'application/x-ndjson'
+      #'Authorization': 'Bearer AA...',
+      #'Content-Type': 'application/x-ndjson'
     }    
 )
 
@@ -15,7 +15,9 @@ messages =\
 [
   {
     'role': 'system',
-    'content': 'You are an assistant for helping to find any locations. Other questions, say kindly that it is not part of your role using your own words. Be short and concise in your answers.',
+    'content': '''
+You are an assistant for helping to find any locations. Other questions, say kindly that it is not part of your role using your own words. Be short and concise in your answers.
+''',
   },
 ]
 
