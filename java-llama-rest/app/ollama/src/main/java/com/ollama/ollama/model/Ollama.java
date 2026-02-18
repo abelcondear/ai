@@ -1,13 +1,15 @@
 package com.ollama.ollama.model;
 
-import com.ollama.ollama.component.ApplicationProperties;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import com.ollama.ollama.component.ApplicationProperties;
 import static java.lang.ProcessBuilder.startPipeline;
+import java.io.IOException;
 
 public class Ollama {
-    private final String content;
+    private final String prompt;
+    private final String response;
 
     public Ollama(String prompt) throws IOException {
         String path = new File(".").getAbsolutePath();
@@ -49,7 +51,8 @@ public class Ollama {
             }
         }
 
-        this.content = response;
+        this.prompt = prompt;
+        this.response = response;
     }
 
     private List<String> readOutput(InputStream inputStream) {
@@ -58,7 +61,11 @@ public class Ollama {
         return r.lines().toList();
     }
 
-    public String getContent() {
-        return content;
+    public String getResponse() {
+        return this.response;
+    }
+
+    public String getPrompt() {
+        return this.prompt;
     }
 }
