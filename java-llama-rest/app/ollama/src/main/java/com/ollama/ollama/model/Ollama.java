@@ -1,23 +1,32 @@
 package com.ollama.ollama.model;
 
+import com.ollama.ollama.component.ApplicationProperties;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
-
 import static java.lang.ProcessBuilder.startPipeline;
 
 public class Ollama {
     private final String content;
 
-    public Ollama(String content) throws IOException {
+    public Ollama(String prompt) throws IOException {
+        String path = new File(".").getAbsolutePath();
+
+        String appNameDir = "\\" + ApplicationProperties.AppName + "\\";
+        String psScript = ApplicationProperties.AppName + ".ps1";
+
+        int index = path.indexOf(appNameDir);
+
+        String currentPath = path.substring(0, index + appNameDir.length());
+        String filePath = currentPath + psScript;
+
         List<ProcessBuilder> builders = Arrays.asList(
                     new ProcessBuilder(
                         "powershell",
                                     "-File",
-                                    "C:\\Users\\scott\\Documents\\Me\\Programs\\backend\\java\\chat\\llama-chat" +
-                                        ".v04\\ollama\\ollama.ps1",
+                                    filePath,
                                     "-Prompt",
-                                    String.format("\"%s\"", content)
+                                    String.format("\"%s\"", prompt)
                                     )
                   );
 
