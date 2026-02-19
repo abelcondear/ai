@@ -1,4 +1,4 @@
-package com.ollama.ollama.model;
+package com.ollama.ollama.utils;
 
 import java.io.*;
 import java.util.Arrays;
@@ -7,11 +7,11 @@ import static com.ollama.ollama.component.ApplicationProperties.AppName;
 import static java.lang.ProcessBuilder.startPipeline;
 import java.io.IOException;
 
-public class Ollama {
-    private final String prompt;
-    private final String response;
+public class OllamaReader {
+    public String prompt;
+    public String response;
 
-    public Ollama(String prompt) throws IOException {
+    public OllamaReader(String prompt) throws IOException {
         String path = new File(".").getAbsolutePath();
 
         String appNameDir = "\\" + AppName + "\\";
@@ -23,14 +23,14 @@ public class Ollama {
         String filePath = currentPath + psScript;
 
         List<ProcessBuilder> builders = Arrays.asList(
-                    new ProcessBuilder(
+                new ProcessBuilder(
                         "powershell",
-                                    "-File",
-                                    filePath,
-                                    "-Prompt",
-                                    String.format("\"%s\"", prompt)
-                                    )
-                  );
+                        "-File",
+                        filePath,
+                        "-Prompt",
+                        String.format("\"%s\"", prompt)
+                )
+        );
 
         List<Process> processes = startPipeline(builders);
         Process last = processes.getLast();
@@ -40,13 +40,17 @@ public class Ollama {
         String response = "There is no response.";
 
         for (String text : output) {
-            int position = text.indexOf("response", 0);
+            int positionStart = text.indexOf("\"response\":", 0);
 
-            if (position != -1) {
-                position = text.indexOf(": ", position) + ": ".length();
+            if (positionStart != -1) {
+                int positionEnd = text.indexOf(",\"done\":", positionStart) + ": ".length();
 
-                if (position != -1) {
-                    response = text.substring(position);
+                if (positionEnd != -1) {
+                    //response = text.substring(position);
+                    response = text.substring(
+                                positionStart + "\"response\":".length(),
+                                positionEnd - ",".length()
+                            ); //"Hello",
                 }
             }
         }
@@ -59,13 +63,5 @@ public class Ollama {
         Reader isr = new InputStreamReader(inputStream);
         BufferedReader r = new BufferedReader(isr);
         return r.lines().toList();
-    }
-
-    public String getResponse() {
-        return this.response;
-    }
-
-    public String getPrompt() {
-        return this.prompt;
     }
 }
