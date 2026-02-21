@@ -2,6 +2,7 @@ package com.ollama.ollama.controller;
 
 import com.ollama.ollama.component.TaskPromptStore;
 import com.ollama.ollama.component.TaskStatusStore;
+import com.ollama.ollama.configuration.TaskStatus;
 import com.ollama.ollama.service.TrackedEventService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,16 +24,31 @@ public class TrackedEventController {
     @GetMapping("/trigger-tracked/{prompt}")
     public String triggerTracked(@PathVariable("prompt") String prompt) {
         String taskId = service.triggerTrackedEvent(prompt);
-        return "Task started. ID: " + taskId + " — check status at /status/" + statusStore.getStatus(taskId);
+
+        return "Task started. ID: " + taskId + " — check status at /status/" + statusStore.readStatus(taskId);
+        //return "Task started. ID: " + taskId + " — check status at /status/" + statusStore.getStatus(taskId);
     }
 
     @GetMapping("/trigger-response/{taskId}")
     public String triggerResponse(@PathVariable("taskId") String taskId) {
-        return "Task " + taskId + " - prompt: " + promptStore.getPrompt(taskId).getPrompt() + " - response: " + promptStore.getPrompt(taskId).getResponse();
+        String result;
+
+        if (statusStore.readStatus(taskId) == TaskStatus.COMPLETED) {
+            result = "Task " + taskId + " - prompt: " + promptStore.readPrompt(taskId).getPrompt()  + " - " +
+                    "response: " + String.join(" ", promptStore.readPrompt(taskId).getResponse());
+        }
+        else {
+            result = "Task " + taskId + " status: " + statusStore.readStatus(taskId);
+        }
+
+        return result;
+
+        //return "Task " + taskId + " - prompt: " + promptStore.getPrompt(taskId).getPrompt() + " - response: " +
+        // promptStore.getPrompt(taskId).getResponse();
     }
 
     @GetMapping("/status/{taskId}")
     public String getStatus(@PathVariable("taskId") String taskId) {
-        return "Task " + taskId + " status: " + statusStore.getStatus(taskId);
+        return "Task " + taskId + " status: " + statusStore.readStatus(taskId);
     }
 }

@@ -10,6 +10,14 @@ public class TaskPromptStore {
     // create array of promptMap
     private final ConcurrentMap<String, TaskPrompt> promptMap = new ConcurrentHashMap<>();
 
+    public void addPrompt(String taskId, TaskPrompt prompt) {
+        promptMap.put(taskId, prompt);
+    }
+
+    public TaskPrompt readPrompt(String taskId) {
+        return promptMap.get(taskId);
+    }
+
     public void setPrompt(String taskId, TaskPrompt prompt) {
         promptMap.put(taskId, prompt);
     }

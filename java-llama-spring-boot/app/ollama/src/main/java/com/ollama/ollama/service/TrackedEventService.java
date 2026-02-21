@@ -4,7 +4,7 @@ import com.ollama.ollama.component.TaskPromptStore;
 import com.ollama.ollama.configuration.TaskPrompt;
 import com.ollama.ollama.configuration.TaskStatus;
 import com.ollama.ollama.component.TaskStatusStore;
-import com.ollama.ollama.utils.TrackedEvent;
+import com.ollama.ollama.model.TrackedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
@@ -27,9 +27,14 @@ public class TrackedEventService {
         String taskId = UUID.randomUUID().toString();
         TaskPrompt taskPrompt = new TaskPrompt();
 
+//        taskPrompt.setPrompt(prompt);
+//        promptStore.setPrompt(taskId, taskPrompt);
+//        statusStore.setStatus(taskId, TaskStatus.PENDING);
+//        TrackedEvent trackedEvent = new TrackedEvent(this, taskId, taskPrompt);
+
         taskPrompt.setPrompt(prompt);
-        promptStore.setPrompt(taskId, taskPrompt);
-        statusStore.setStatus(taskId, TaskStatus.PENDING);
+        promptStore.addPrompt(taskId, taskPrompt);
+        statusStore.addStatus(taskId, TaskStatus.PENDING);
         TrackedEvent trackedEvent = new TrackedEvent(this, taskId, taskPrompt);
 
         publisher.publishEvent(trackedEvent);

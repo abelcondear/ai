@@ -1,8 +1,10 @@
 package com.ollama.ollama.configuration;
 
+import java.util.List;
+
 public class TaskPrompt {
     private String prompt;
-    private String response;
+    private List<String> response;
 
     public String getPrompt(){
         return this.prompt;
@@ -12,11 +14,11 @@ public class TaskPrompt {
         this.prompt = prompt;
     }
 
-    public String getResponse(){
+    public List<String> getResponse(){
         return this.response;
     }
 
-    public void setResponse(String response){
+    public void setResponse(List<String> response){
         this.response = response;
     }
 }

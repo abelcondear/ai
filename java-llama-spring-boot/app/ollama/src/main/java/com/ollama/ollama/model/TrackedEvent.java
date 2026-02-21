@@ -1,4 +1,4 @@
-package com.ollama.ollama.utils;
+package com.ollama.ollama.model;
 
 import com.ollama.ollama.configuration.TaskPrompt;
 import org.springframework.context.ApplicationEvent;

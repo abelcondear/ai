@@ -1,6 +1,7 @@
 package com.ollama.ollama.utils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static com.ollama.ollama.component.ApplicationProperties.AppName;
@@ -9,7 +10,7 @@ import java.io.IOException;
 
 public class OllamaReader {
     public String prompt;
-    public String response;
+    public List<String> response;
 
     public OllamaReader(String prompt) throws IOException {
         String path = new File(".").getAbsolutePath();
@@ -37,7 +38,8 @@ public class OllamaReader {
 
         List<String> output = readOutput(last.getInputStream());
 
-        String response = "There is no response.";
+        //String response = "There is no response.";
+        List<String> response = new ArrayList<>(new java.util.ArrayList<>(List.of()));
 
         for (String text : output) {
             int positionStart = text.indexOf("\"response\":", 0);
@@ -47,12 +49,25 @@ public class OllamaReader {
 
                 if (positionEnd != -1) {
                     //response = text.substring(position);
-                    response = text.substring(
-                                positionStart + "\"response\":".length(),
-                                positionEnd - ",".length()
-                            ); //"Hello",
+//                    response = text.substring(
+//                                positionStart + "\"response\":".length(),
+//                                positionEnd - ",".length()
+//                            ); //"Hello",
+
+                    String str = text.substring(
+                            positionStart + "\"response\":".length(),
+                            positionEnd - ",".length()
+                    ).replaceAll("(^\")|(\",$)", ""); // this last replaceAll removes single quote from the
+                    // beginning and end of string
+
+                    if (!str.isEmpty()) { response.add(str); }
+
                 }
             }
+        }
+
+        if (response.isEmpty()) {
+            response.add("There is not response.");
         }
 
         this.prompt = prompt;

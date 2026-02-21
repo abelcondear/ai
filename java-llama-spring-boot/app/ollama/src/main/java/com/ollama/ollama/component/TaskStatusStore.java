@@ -10,6 +10,18 @@ public class TaskStatusStore {
     // create array of statusMap
     private final ConcurrentMap<String, TaskStatus> statusMap = new ConcurrentHashMap<>();
 
+    public TaskStatusStore() {
+        //TODO
+    }
+
+    public void addStatus(String taskId, TaskStatus status) {
+        statusMap.put(taskId, status);
+    }
+
+    public TaskStatus readStatus(String taskId) {
+        return statusMap.get(taskId);
+    }
+
     public void setStatus(String taskId, TaskStatus status) {
         statusMap.put(taskId, status);
     }
