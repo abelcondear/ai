@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ollama</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        h1 { color: #e74c3c; }
+    </style>
+</head>
+<body>
+<p>Task ID: [[${taskId}]]</p>
+<br/>
+<p>Status: [[${status}]]</p>
+<br/>
+<p th:switch="${prompt}">
+    <span th:case="''" th:text="''"></span>
+    <span th:case="*" th:text="${prompt}"></span>
+</p>
+<br/>
+<p th:switch="${response}">
+    <span th:case="''" th:text="''"></span>
+    <span th:case="*" th:text="${response}"></span>
+</p>
+<a href="/home">Go Home</a>
+</body>
+</html>

@@ -37,8 +37,6 @@ public class OllamaReader {
         Process last = processes.getLast();
 
         List<String> output = readOutput(last.getInputStream());
-
-        //String response = "There is no response.";
         List<String> response = new ArrayList<>(new java.util.ArrayList<>(List.of()));
 
         for (String text : output) {
@@ -48,16 +46,11 @@ public class OllamaReader {
                 int positionEnd = text.indexOf(",\"done\":", positionStart) + ": ".length();
 
                 if (positionEnd != -1) {
-                    //response = text.substring(position);
-//                    response = text.substring(
-//                                positionStart + "\"response\":".length(),
-//                                positionEnd - ",".length()
-//                            ); //"Hello",
-
                     String str = text.substring(
                             positionStart + "\"response\":".length(),
                             positionEnd - ",".length()
-                    ).replaceAll("(^\")|(\",$)", ""); // this last replaceAll removes single quote from the
+                    ).replaceAll("(^\")|(\",$)", "");
+                    // this last replaceAll method removes single quote from the
                     // beginning and end of string
 
                     if (!str.isEmpty()) { response.add(str); }

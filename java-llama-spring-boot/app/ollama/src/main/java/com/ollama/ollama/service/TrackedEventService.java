@@ -27,11 +27,6 @@ public class TrackedEventService {
         String taskId = UUID.randomUUID().toString();
         TaskPrompt taskPrompt = new TaskPrompt();
 
-//        taskPrompt.setPrompt(prompt);
-//        promptStore.setPrompt(taskId, taskPrompt);
-//        statusStore.setStatus(taskId, TaskStatus.PENDING);
-//        TrackedEvent trackedEvent = new TrackedEvent(this, taskId, taskPrompt);
-
         taskPrompt.setPrompt(prompt);
         promptStore.addPrompt(taskId, taskPrompt);
         statusStore.addStatus(taskId, TaskStatus.PENDING);

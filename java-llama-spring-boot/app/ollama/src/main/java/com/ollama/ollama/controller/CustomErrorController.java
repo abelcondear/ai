@@ -2,39 +2,60 @@ package com.ollama.ollama.controller;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.ui.Model;
 import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/error")
 public class CustomErrorController implements ErrorController {
 
-    @RequestMapping
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> handleError(HttpServletRequest request) {
-        // Retrieve the error message
+    @RequestMapping(value="/400", method=RequestMethod.GET)
+    public String handleError400(HttpServletRequest request, Model model) {
+        return "/static/400";
+    }
+
+    @RequestMapping(value="/404", method=RequestMethod.GET)
+    public String handleError404(HttpServletRequest request, Model model) {
+        return "/static/404";
+    }
+
+    @RequestMapping(value="/500", method=RequestMethod.GET)
+    public String handleError500(HttpServletRequest request, Model model) {
+        return "/static/500";
+    }
+
+    @RequestMapping(value="/error", method=RequestMethod.GET)
+    public String handleError(HttpServletRequest request, RedirectAttributes redirectAttributes, Model model) {
         Object errorMessage = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
-
-        // Retrieve the HTTP status code
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        Integer statusCode = status != null ? Integer.valueOf(status.toString()) : HttpStatus.INTERNAL_SERVER_ERROR.value();
 
-        Map<String, Object> errorDetails = new HashMap<>();
-        errorDetails.put("status", statusCode);
-        errorDetails.put("message", errorMessage != null ? errorMessage.toString() : "No message available");
-        // Add other details if needed, e.g., timestamp, path
+        int statusCode = (status != null) ? Integer.parseInt(status.toString()) :
+                HttpStatus.INTERNAL_SERVER_ERROR.value();
+        String message = (errorMessage != null) ? errorMessage.toString() : "No message available";
 
-        return new ResponseEntity<>(errorDetails, HttpStatus.valueOf(statusCode));
+        model.addAttribute("status", statusCode);
+        model.addAttribute("message", message);
+
+        String url;
+
+        if (statusCode == 400) {
+            url = "/static/400";
+        } else if (statusCode == 404) {
+            url = "/static/404";
+        } else if (statusCode == 500) {
+            url = "/static/500";
+        } else {
+            url = "/error/common";
+        }
+
+        return url;
     }
 
     public String getErrorPath() {
-        return "/error";
+        return "/error/common";
     }
 }
