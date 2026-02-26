@@ -5,11 +5,25 @@
     <title>ollama</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-        h1 { color: #e74c3c; }
     </style>
 </head>
 <body>
 <p>Welcome</p>
+<p>Today: [[${currentDate}]]</p>
+
+<br/>
+<br/>
+
+<section th:each="item: ${data}">
+    <p>TaskId: [[${item.taskId}]]</p>
+    <p th:if="${not #strings.isEmpty(item.prompt)}">Prompt: [[${item.prompt}]]</p>
+    <p th:if="${not #strings.isEmpty(item.response)}">Response: [[${item.response}]]</p>
+    <p>Status: [[${item.status}]]</p>
+</section>
+
+<br/>
+<br/>
+
 </body>
 </html>
 

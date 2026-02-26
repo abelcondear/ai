@@ -1,10 +1,11 @@
 package com.ollama.ollama.configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskPrompt {
     private String prompt;
-    private List<String> response;
+    private List<String> response = new ArrayList<>(){};
 
     public String getPrompt(){
         return this.prompt;

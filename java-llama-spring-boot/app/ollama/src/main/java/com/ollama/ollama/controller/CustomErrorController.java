@@ -13,24 +13,55 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class CustomErrorController implements ErrorController {
 
-    @RequestMapping(value="/400", method=RequestMethod.GET)
-    public String handleError400(HttpServletRequest request, Model model) {
+    @RequestMapping(value="/400", method=RequestMethod.POST)
+    public String handleError400POST(HttpServletRequest request, Model model) {
         return "/static/400";
     }
 
-    @RequestMapping(value="/404", method=RequestMethod.GET)
-    public String handleError404(HttpServletRequest request, Model model) {
+    @RequestMapping(value="/400", method=RequestMethod.GET)
+    public String handleError400GET(HttpServletRequest request, Model model) {
+        return "/static/400";
+    }
+
+    @RequestMapping(value="/404", method=RequestMethod.POST)
+    public String handleError404POST(HttpServletRequest request, Model model) {
         return "/static/404";
     }
 
-    @RequestMapping(value="/500", method=RequestMethod.GET)
-    public String handleError500(HttpServletRequest request, Model model) {
+    @RequestMapping(value="/404", method=RequestMethod.GET)
+    public String handleError404GET(HttpServletRequest request, Model model) {
+        return "/static/404";
+    }
+
+    @RequestMapping(value="/500", method=RequestMethod.POST)
+    public String handleError500POST(HttpServletRequest request, Model model) {
         return "/static/500";
     }
 
+    @RequestMapping(value="/500", method=RequestMethod.GET)
+    public String handleError500GET(HttpServletRequest request, Model model) {
+        return "/static/500";
+    }
+
+    @RequestMapping(value="/error", method=RequestMethod.POST)
+    public String handleErrorPOST(HttpServletRequest request, RedirectAttributes redirectAttributes, Model model) {
+        return this.handleError(request, redirectAttributes, model);
+    }
+
     @RequestMapping(value="/error", method=RequestMethod.GET)
-    public String handleError(HttpServletRequest request, RedirectAttributes redirectAttributes, Model model) {
+    public String handleErrorGET(HttpServletRequest request, RedirectAttributes redirectAttributes, Model model) {
+        return this.handleError(request, redirectAttributes, model);
+    }
+
+    public String getErrorPath() {
+        return "/error/common";
+    }
+
+    private String handleError(HttpServletRequest request, RedirectAttributes redirectAttributes, Model model) {
+        // Retrieve the error message
         Object errorMessage = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+
+        // Retrieve the HTTP status code
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         int statusCode = (status != null) ? Integer.parseInt(status.toString()) :
@@ -53,9 +84,5 @@ public class CustomErrorController implements ErrorController {
         }
 
         return url;
-    }
-
-    public String getErrorPath() {
-        return "/error/common";
     }
 }

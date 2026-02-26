@@ -45,9 +45,7 @@ public class Ollama {
             if (position != -1) {
                 position = text.indexOf(": ", position) + ": ".length();
 
-                if (position != -1) {
-                    response = text.substring(position);
-                }
+                if (position != -1) { response = text.substring(position); }
             }
         }
 
