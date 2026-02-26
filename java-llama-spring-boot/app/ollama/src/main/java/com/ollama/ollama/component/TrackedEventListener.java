@@ -40,6 +40,7 @@ public class TrackedEventListener {
 
                 System.out.println("Task " + taskId + " completed.");
             } catch (IOException e) {
+                statusStore.setStatus(taskId, TaskStatus.FAILED);
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }

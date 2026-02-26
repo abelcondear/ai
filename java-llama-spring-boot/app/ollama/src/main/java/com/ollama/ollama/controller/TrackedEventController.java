@@ -124,8 +124,13 @@ public class TrackedEventController {
                                 promptStore.readPrompt(taskId).getResponse()
                             ).replace(
                                     "\n", "<br/>"
+                            ).replace(
+                                    "\n\n", "<br/><br/>"
+                            ).replace(
+                                    "\"", "&quot;"
                             )
                     );
+                    data.get(index).put("status", this.translate(statusStore.readStatus(taskId)));
                 }
 
                 index++;
