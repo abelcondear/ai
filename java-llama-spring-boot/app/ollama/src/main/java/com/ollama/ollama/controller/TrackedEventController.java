@@ -8,9 +8,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+import java.nio.Buffer;
+import java.nio.CharBuffer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
 
 @Controller
 public class TrackedEventController {
@@ -37,30 +42,32 @@ public class TrackedEventController {
         String url = "/public/home";
         String prompt;
 
-        prompt = "Hello";
+        //prompt = "Hello";
+        //if (!this.checkExist(prompt)) {
+        //    this.addPrompt(model, prompt);
+        //}
+
+        //prompt = "Hi";
+        //if (!this.checkExist(prompt)) {
+        //    this.addPrompt(model, prompt);
+        //}
+
+        //fixing latin encoding
+        //response is not correct. weird characters appears.
+        prompt = "Buenos días, ¿Cómo funciona la IA? Me lo puedes explicar brevemente.";
         if (!this.checkExist(prompt)) {
             this.addPrompt(model, prompt);
         }
 
-        prompt = "Hi";
-        if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
-        }
+        //prompt = "Guten Tag, mein Freund";
+        //if (!this.checkExist(prompt)) {
+        //    this.addPrompt(model, prompt);
+        //}
 
-        prompt = "Buenos días";
-        if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
-        }
-
-        prompt = "Guten Tag, mein Freund";
-        if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
-        }
-
-        prompt = "Tell me who is it?";
-        if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
-        }
+        //prompt = "Tell me who is it?";
+        //if (!this.checkExist(prompt)) {
+        //    this.addPrompt(model, prompt);
+        //}
 
         this.updateData();
         this.loadPrompts(model);
@@ -115,27 +122,48 @@ public class TrackedEventController {
 
             for (Map<String, String> item : data) {
                 if (Objects.equals(item.get("taskId"), taskId)) {
-                    data.get(index).put("prompt", promptStore.readPrompt(taskId).getPrompt());
-                    data.get(index).put("response",
-                            promptStore.readPrompt(taskId).getResponse().isEmpty() ?
-                            "":
-                            String.join(
-                                " ",
-                                promptStore.readPrompt(taskId).getResponse()
-                            ).replace(
-                                    "\n", "<br/>"
-                            ).replace(
-                                    "\n\n", "<br/><br/>"
-                            ).replace(
-                                    "\"", "&quot;"
-                            )
-                    );
+                    String strPrompt = promptStore.readPrompt(taskId).getPrompt();
+                    String strResponse = promptStore.readPrompt(taskId).getResponse()
+                                    .isEmpty() ?
+                                        "":
+                                        String.join(
+                                                " ",
+                                                promptStore.readPrompt(taskId).getResponse()
+                                        ).replace(
+                                                "\\n", "<br/>"
+                                        ).replace(
+                                                "\\", ""
+                                        );
+
+                    data.get(index).put("prompt", this.encodeUTF_8(strPrompt));
+                    data.get(index).put("response", this.encodeUTF_8(strResponse));
+
+//                    data.get(index).put("response",
+//                            promptStore.readPrompt(taskId).getResponse().isEmpty() ?
+//                            "":
+//                            String.join(
+//                                " ",
+//                                promptStore.readPrompt(taskId).getResponse()
+//                            ).replace(
+//                                    "\n", "<br/>"
+//                            ).replace(
+//                                    "\n\n", "<br/><br/>"
+//                            ).replace(
+//                                    "\"", "&quot;"
+//                            )
+//                    );
+
                     data.get(index).put("status", this.translate(statusStore.readStatus(taskId)));
                 }
 
                 index++;
             }
         }
+    }
+
+    private String encodeUTF_8(String text) {
+        ByteBuffer buffer = StandardCharsets.ISO_8859_1.encode(text);
+        return StandardCharsets.ISO_8859_1.decode(buffer).toString();
     }
 
     private void loadPrompts(Model model) {

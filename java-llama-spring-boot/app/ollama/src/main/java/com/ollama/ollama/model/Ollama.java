@@ -1,6 +1,9 @@
 package com.ollama.ollama.model;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import static com.ollama.ollama.component.ApplicationProperties.AppName;
@@ -28,9 +31,10 @@ public class Ollama {
                                     "-File",
                                     filePath,
                                     "-Prompt",
+                                    //this.encodeUTF_8(String.format("\"%s\"", prompt))
                                     String.format("\"%s\"", prompt)
-                                    )
-                  );
+                    )
+        );
 
         List<Process> processes = startPipeline(builders);
         Process last = processes.getLast();
@@ -51,6 +55,14 @@ public class Ollama {
 
         this.prompt = prompt;
         this.response = response;
+    }
+
+    private String encodeUTF_8(String text) {
+        ByteBuffer buffer_ISD_8859_1 = StandardCharsets.ISO_8859_1.encode(text);
+        String string_ISD_8859_1 = StandardCharsets.ISO_8859_1.decode(buffer_ISD_8859_1).toString();
+
+        ByteBuffer buffer_UTF_8 = StandardCharsets.UTF_8.encode(string_ISD_8859_1);
+        return StandardCharsets.UTF_8.decode(buffer_UTF_8).toString();
     }
 
     private List<String> readOutput(InputStream inputStream) {
