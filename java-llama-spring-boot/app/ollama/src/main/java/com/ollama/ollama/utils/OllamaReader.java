@@ -8,10 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import static com.ollama.ollama.component.ApplicationProperties.AppName;
 import static java.lang.ProcessBuilder.startPipeline;
+
+import com.ollama.ollama.error.ShellExecutionException;
 import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
-import java.lang.RuntimeException;
-import com.ollama.ollama.error.ShellExecutionException;
 
 public class OllamaReader {
     public String prompt;
@@ -30,7 +30,11 @@ public class OllamaReader {
         String currentPath = path.substring(0, index + appNameDir.length());
         String filePath = currentPath + psScript;
 
-        this.restoreShellScript(filePath, psScript, psTemplateScript, prompt);
+        String commandPs = String.format(
+                "\"[Console]::OutputEncoding=[System.Text.Encoding]::UTF8; powershell -File '%s' -Z '%s'\"",
+                psTemplateScript,
+                prompt
+        );
 
         ProcessBuilder pbuilder = new ProcessBuilder(
                 "powershell",
@@ -38,8 +42,8 @@ public class OllamaReader {
                         "-ExecutionPolicy",
                         "Bypass",
                         "-Command",
-                        "\"[Console]::OutputEncoding=[System.Text.Encoding]::UTF8; powershell -File .\\ollama.ps1\""
-                );
+                        commandPs
+            );
 
         pbuilder.directory(new File(currentPath)); // set working directory to run this command
         pbuilder.redirectErrorStream(false); // keep stdout and stderr separate
@@ -52,11 +56,14 @@ public class OllamaReader {
         List<String> response = new ArrayList<>(new ArrayList<>(List.of()));
 
         try {
-            try (BufferedReader stdOut = new BufferedReader(
-                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+            try (
+                 BufferedReader stdOut = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8)
+                 );
                  BufferedReader stdErr = new BufferedReader(
-                         new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))) {
-
+                    new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8)
+                 )
+            ) {
                 String text;
 
                 String line;
@@ -91,8 +98,8 @@ public class OllamaReader {
                         positionStart = text.indexOf(ending, 0);
 
                         if (positionStart == 0) { // should be at first position of the string
-                            break; // exit for
-                        } else if (isReadingResponse) {  // only do the follow steps when the string format is like "key: value"
+                            break; // exit for // reading of response is finished
+                        } else if (isReadingResponse) {
                             positionStart = 0;
 
                             String str = text.substring(
@@ -119,6 +126,7 @@ public class OllamaReader {
 
                 while ((line = stdErr.readLine()) != null) {
                     System.err.println(line);
+
                     errorFound = true;
                     errorDescription.add(line);
                 }
@@ -137,7 +145,7 @@ public class OllamaReader {
         } catch (IOException e) {
             System.err.println("I/O Error: " + e.getMessage());
             response.clear();
-            response.add(e.getMessage()); // set error description in response
+            response.add(e.getMessage()); // set error description
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.err.println("Process interrupted");
@@ -147,45 +155,9 @@ public class OllamaReader {
         this.response = response;
     }
 
-    private void restoreShellScript(String filePath, String psScript, String psTemplateScript, String prompt) throws RuntimeException, IOException {
-        // restore psScript from template script
-        Files.copy(
-                Paths.get(
-                        filePath.replace(psScript, psTemplateScript)
-                ),
-                Paths.get(
-                        filePath
-                ),
-                StandardCopyOption.REPLACE_EXISTING
-        );
-
-        this.replaceInFile(
-                filePath,
-                "%%PROMPT%%",
-                prompt
-        );
-    }
-
     private List<String> readOutput(InputStream inputStream) {
         Reader isr = new InputStreamReader(inputStream);
         BufferedReader r = new BufferedReader(isr);
         return r.lines().toList();
-    }
-
-    private void replaceInFile(String filePath, String target, String replacement) throws IOException {
-        Path path = Paths.get(filePath);
-
-        if (!Files.exists(path)) {
-            throw new IOException("File not found: " + filePath);
-        }
-
-        Files.writeString(
-                path,
-                Files
-                        .readString(path, StandardCharsets.UTF_8)
-                        .replace(target, replacement),
-                StandardCharsets.UTF_8,
-                StandardOpenOption.TRUNCATE_EXISTING
-        );
     }
 }

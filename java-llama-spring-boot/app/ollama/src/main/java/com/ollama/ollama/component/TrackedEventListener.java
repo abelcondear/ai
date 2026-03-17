@@ -39,7 +39,7 @@ public class TrackedEventListener {
                 statusStore.addStatus(taskId, TaskStatus.COMPLETED);
 
                 System.out.println("Task " + taskId + " completed.");
-            } catch (IOException | RuntimeException e) {
+            } catch (IOException e) {
                 statusStore.setStatus(taskId, TaskStatus.FAILED);
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);

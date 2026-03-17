@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+import java.nio.Buffer;
+import java.nio.CharBuffer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -45,7 +47,7 @@ public class TrackedEventController {
             this.addPrompt(model, prompt);
         }
 
-        prompt = "Buenos días, ¿Cómo funciona la IA? Me lo puedes explicar brevemente.";
+        prompt = "Buenos días, ¿Cómo estás?.";
         if (!this.checkExist(prompt)) {
             this.addPrompt(model, prompt);
         }
@@ -56,6 +58,11 @@ public class TrackedEventController {
         }
 
         prompt = "Tell me who is it?";
+        if (!this.checkExist(prompt)) {
+            this.addPrompt(model, prompt);
+        }
+
+        prompt = "Como vai?";
         if (!this.checkExist(prompt)) {
             this.addPrompt(model, prompt);
         }
@@ -128,6 +135,21 @@ public class TrackedEventController {
 
                     data.get(index).put("prompt", this.encodeUTF_8(strPrompt));
                     data.get(index).put("response", this.encodeUTF_8(strResponse));
+
+//                    data.get(index).put("response",
+//                            promptStore.readPrompt(taskId).getResponse().isEmpty() ?
+//                            "":
+//                            String.join(
+//                                " ",
+//                                promptStore.readPrompt(taskId).getResponse()
+//                            ).replace(
+//                                    "\n", "<br/>"
+//                            ).replace(
+//                                    "\n\n", "<br/><br/>"
+//                            ).replace(
+//                                    "\"", "&quot;"
+//                            )
+//                    );
 
                     data.get(index).put("status", this.translate(statusStore.readStatus(taskId)));
                 }
