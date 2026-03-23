@@ -8,8 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
-import java.nio.Buffer;
-import java.nio.CharBuffer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -23,6 +21,8 @@ public class TrackedEventController {
     private final TaskStatusStore statusStore;
     private final TaskPromptStore promptStore;
 
+    private Model model;
+
     private List<String> prompts = new ArrayList<>(List.of());
     private List<String> tasksId = new ArrayList<>(List.of());
     private List<Map<String, String>> data = new ArrayList<>(List.of());
@@ -32,46 +32,96 @@ public class TrackedEventController {
         this.service = service;
         this.statusStore = statusStore;
         this.promptStore = promptStore;
+        //this.model = model;
     }
 
     @GetMapping("/home")
     public String home(Model model) {
+        this.model = model;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        model.addAttribute("currentDate", LocalDateTime.now().format(formatter));
+        this.model.addAttribute("currentDate", LocalDateTime.now().format(formatter));
 
         String url = "/public/home";
         String prompt;
 
         prompt = "Hello";
         if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
+            this.addPrompt(this.model, prompt);
         }
 
         prompt = "Buenos días, ¿Cómo estás?.";
         if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
+            this.addPrompt(this.model, prompt);
         }
 
         prompt = "Guten Tag, mein Freund";
         if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
+            this.addPrompt(this.model, prompt);
         }
 
         prompt = "Tell me who is it?";
         if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
+            this.addPrompt(this.model, prompt);
         }
 
         prompt = "Como vai?";
         if (!this.checkExist(prompt)) {
-            this.addPrompt(model, prompt);
+            this.addPrompt(this.model, prompt);
         }
 
         this.updateData();
-        this.loadPrompts(model);
+        this.loadPrompts(this.model);
 
         return url;
+        //return this.handleUrlRequest(this.model);
     }
+
+    @PostMapping("/home")
+    public String handleForm(@RequestParam("editPromptES") String editPromptES) {
+        String url = "/public/home";
+        System.out.printf("editPromptES: %s", editPromptES);
+        return url;
+        //return this.handleUrlRequest(this.model);
+    }
+
+//    private String handleUrlRequest(Model model){
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+//        model.addAttribute("currentDate", LocalDateTime.now().format(formatter));
+//
+//        String url = "/public/home";
+//        String prompt;
+//
+//        prompt = "Hello";
+//        if (!this.checkExist(prompt)) {
+//            this.addPrompt(model, prompt);
+//        }
+//
+//        prompt = "Buenos días, ¿Cómo estás?.";
+//        if (!this.checkExist(prompt)) {
+//            this.addPrompt(model, prompt);
+//        }
+//
+//        prompt = "Guten Tag, mein Freund";
+//        if (!this.checkExist(prompt)) {
+//            this.addPrompt(model, prompt);
+//        }
+//
+//        prompt = "Tell me who is it?";
+//        if (!this.checkExist(prompt)) {
+//            this.addPrompt(model, prompt);
+//        }
+//
+//        prompt = "Como vai?";
+//        if (!this.checkExist(prompt)) {
+//            this.addPrompt(model, prompt);
+//        }
+//
+//        this.updateData();
+//        this.loadPrompts(model);
+//
+//        return url;
+//    }
 
     private void addPrompt(Model model, String prompt) {
         prompts.add(prompt);
@@ -132,9 +182,21 @@ public class TrackedEventController {
                                         ).replace(
                                                 "\\", ""
                                         );
+                    String strError = promptStore.readPrompt(taskId).getResponse()
+                            .isEmpty() ?
+                            "":
+                            String.join(
+                                    " ",
+                                    promptStore.readPrompt(taskId).getError()
+                            ).replace(
+                                    "\\n", "<br/>"
+                            ).replace(
+                                    "\\", ""
+                            );
 
-                    data.get(index).put("prompt", this.encodeUTF_8(strPrompt));
-                    data.get(index).put("response", this.encodeUTF_8(strResponse));
+                    data.get(index).put("prompt", this.decodeEncoding(strPrompt));
+                    data.get(index).put("response", this.decodeEncoding(strResponse));
+                    data.get(index).put("error", this.decodeEncoding(strError));
 
 //                    data.get(index).put("response",
 //                            promptStore.readPrompt(taskId).getResponse().isEmpty() ?
@@ -159,7 +221,7 @@ public class TrackedEventController {
         }
     }
 
-    private String encodeUTF_8(String text) {
+    private String decodeEncoding(String text) {
         ByteBuffer buffer = StandardCharsets.ISO_8859_1.encode(text);
         return StandardCharsets.ISO_8859_1.decode(buffer).toString();
     }
@@ -195,6 +257,7 @@ public class TrackedEventController {
             url = "/public/prompt";
         } catch (RuntimeException e) {
             statusStore.setStatus(taskId, TaskStatus.FAILED);
+            Thread.currentThread().interrupt();
 
             model.addAttribute("message", e.getMessage());
             url = "/error/common";

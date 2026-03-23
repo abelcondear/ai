@@ -16,8 +16,9 @@ import java.io.IOException;
 public class OllamaReader {
     public String prompt;
     public List<String> response;
+    public List<String> error;
 
-    public OllamaReader(String prompt) throws RuntimeException, IOException {
+    public OllamaReader(String prompt) throws RuntimeException, IOException, InterruptedException {
         String path = new File(".").getAbsolutePath();
 
         String appNameDir = "\\" + AppName + "\\";
@@ -54,6 +55,7 @@ public class OllamaReader {
         Process process = processes.getLast();
 
         List<String> response = new ArrayList<>(new ArrayList<>(List.of()));
+        List<String> error = new ArrayList<>(new ArrayList<>(List.of()));
 
         try {
             try (
@@ -125,34 +127,67 @@ public class OllamaReader {
                 List<String> errorDescription= new ArrayList<>(new ArrayList<>(List.of()));
 
                 while ((line = stdErr.readLine()) != null) {
-                    System.err.println(line);
-
-                    errorFound = true;
+                    //System.err.println(line); // printing in console::omitted
+                    if (!errorFound) { errorFound = true; }
                     errorDescription.add(line);
                 }
 
                 if (errorFound) {
-                    response.add("Sorry. Response could be reached by AI. An error occurred.");
-                    throw new ShellExecutionException(String.join("\n", errorDescription));
+                    Thread.currentThread().interrupt();
+                    error.add("Sorry. Response could not be reached by AI.");
+                    throw new ShellExecutionException(
+                            String.join(
+                                    "\n",
+                                    errorDescription
+                            )
+                    );
                 }
                 else if (response.isEmpty()) {
                     response.add("There is not response.");
                 }
-            } // exit try
+            } catch (ShellExecutionException e) {
+                Thread.currentThread().interrupt();
+                throw e; // Re-Throwing error
+            } catch (Exception e) { // general exception
+                Thread.currentThread().interrupt();
+                throw e; // Re-Throwing error
+            } // exit try // this try-catch result will be caught by the outer try-catch
 
             int exitCode = process.waitFor();
             System.out.println("Process exited with code: " + exitCode);
         } catch (IOException e) {
-            System.err.println("I/O Error: " + e.getMessage());
-            response.clear();
-            response.add(e.getMessage()); // set error description
+            Thread.currentThread().interrupt();
+            System.err.println("I/O Error. " + e.getMessage());
+            System.err.println("IOException. Process interrupted");
+            error.clear();
+            error.add(e.getMessage()); // set error description
+            throw e; // Re-Throw error
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Process interrupted");
+            System.err.println("Interrupted Error. " + e.getMessage());
+            System.err.println("InterruptedException. Process interrupted");
+            error.clear();
+            error.add(e.getMessage()); // set error description
+            throw e; // Re-Throw error
+        } catch (ShellExecutionException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("ShellExecution Error. " + e.getMessage());
+            System.err.println("ShellExecutionException. Process interrupted");
+            error.clear();
+            error.add(e.getMessage()); // set error description
+            throw e; // Re-Throw error
+        } catch (Exception e) { // general exception
+            Thread.currentThread().interrupt();
+            System.err.println("Exception Error. " + e.getMessage());
+            System.err.println("Exception. Process interrupted");
+            error.clear();
+            error.add(e.getMessage()); // set error description
+            throw e; // Re-Throw error
         } // exit try
 
         this.prompt = prompt;
         this.response = response;
+        this.error = error;
     }
 
     private List<String> readOutput(InputStream inputStream) {

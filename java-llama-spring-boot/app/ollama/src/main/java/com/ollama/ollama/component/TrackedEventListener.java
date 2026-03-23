@@ -21,7 +21,7 @@ public class TrackedEventListener {
 
     @Async
     @EventListener
-    public void handleTrackedEvent(TrackedEvent event) throws IOException {
+    public void handleTrackedEvent(TrackedEvent event) throws RuntimeException, IOException, InterruptedException {
         String taskId = event.getTaskId();
 
         //statusStore.setStatus(taskId, TaskStatus.RUNNING);
@@ -39,9 +39,10 @@ public class TrackedEventListener {
                 statusStore.addStatus(taskId, TaskStatus.COMPLETED);
 
                 System.out.println("Task " + taskId + " completed.");
-            } catch (IOException e) {
-                statusStore.setStatus(taskId, TaskStatus.FAILED);
+            //} catch (IOException | InterruptedException e) {
+            } catch (Exception e) {
                 Thread.currentThread().interrupt();
+                statusStore.setStatus(taskId, TaskStatus.FAILED);
                 throw new RuntimeException(e);
             }
         });

@@ -4,8 +4,11 @@ import com.ollama.ollama.configuration.TaskPrompt;
 import org.springframework.context.ApplicationEvent;
 
 public class TrackedEvent extends ApplicationEvent {
-    private final String taskId;
-    private final TaskPrompt taskPrompt;
+    //private final String taskId;
+    //private final TaskPrompt taskPrompt;
+
+    public final String taskId;
+    public final TaskPrompt taskPrompt;
 
     public TrackedEvent(Object source, String taskId, TaskPrompt taskPrompt) {
         super(source);

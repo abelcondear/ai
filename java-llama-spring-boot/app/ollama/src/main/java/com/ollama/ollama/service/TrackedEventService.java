@@ -16,6 +16,9 @@ public class TrackedEventService {
     private final TaskStatusStore statusStore;
     private final TaskPromptStore promptStore;
 
+    public String taskId;
+    public TaskPrompt taskPrompt;
+
     public TrackedEventService(ApplicationEventPublisher publisher, TaskStatusStore statusStore,
                                TaskPromptStore promptStore) {
         this.publisher = publisher;
@@ -24,13 +27,16 @@ public class TrackedEventService {
     }
 
     public String triggerTrackedEvent(String prompt) {
-        String taskId = UUID.randomUUID().toString();
+        this.taskId = UUID.randomUUID().toString();
+        //String taskId = UUID.randomUUID().toString();
         TaskPrompt taskPrompt = new TaskPrompt();
 
         taskPrompt.setPrompt(prompt);
-        promptStore.addPrompt(taskId, taskPrompt);
-        statusStore.addStatus(taskId, TaskStatus.PENDING);
-        TrackedEvent trackedEvent = new TrackedEvent(this, taskId, taskPrompt);
+        promptStore.addPrompt(this.taskId, taskPrompt);
+        statusStore.addStatus(this.taskId, TaskStatus.PENDING);
+        TrackedEvent trackedEvent = new TrackedEvent(this, this.taskId, taskPrompt);
+
+        this.taskPrompt = promptStore.getPrompt(this.taskId);
 
         publisher.publishEvent(trackedEvent);
         return taskId;
