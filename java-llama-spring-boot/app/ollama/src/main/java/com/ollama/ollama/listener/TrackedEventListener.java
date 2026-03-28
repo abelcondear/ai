@@ -1,5 +1,7 @@
-package com.ollama.ollama.component;
+package com.ollama.ollama.listener;
 
+import com.ollama.ollama.component.TaskPromptStore;
+import com.ollama.ollama.component.TaskStatusStore;
 import com.ollama.ollama.configuration.TaskStatus;
 import com.ollama.ollama.model.TrackedEvent;
 import com.ollama.ollama.utils.OllamaReader;
@@ -7,6 +9,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TrackedEventListener {
@@ -42,7 +46,12 @@ public class TrackedEventListener {
             //} catch (IOException | InterruptedException e) {
             } catch (Exception e) {
                 Thread.currentThread().interrupt();
+
+                List<String> message = new ArrayList<>(){};
+                message.add(e.getMessage());
+
                 statusStore.setStatus(taskId, TaskStatus.FAILED);
+                promptStore.getPrompt(taskId).setError(message);
                 throw new RuntimeException(e);
             }
         });

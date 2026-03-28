@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!-- <meta charset="ISO_8859_1"> -->
     <title>ollama</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
@@ -14,33 +13,47 @@
 
 <br/>
 <br/>
-<!--
-<form method="POST">
+
+<form action="/home" method="POST">
     <input type="text" name="editPromptES" value="" placeholder="Escriba su consulta" />
-    <br/>
     <input type="submit" value="Go" />
+    <input type="hidden" name="editPromptPT" value="">
+    <input type="hidden" name="editPromptFR" value="">
+    <input type="hidden" name="editPromptDT" value="">
+    <input type="hidden" name="editPromptEN" value="">
 </form>
 <form method="POST">
     <input type="text" name="editPromptPT" value="" placeholder="Escreva seu pedido" />
-    <br/>
     <input type="submit" value="Go" />
+    <input type="hidden" name="editPromptES" value="">
+    <input type="hidden" name="editPromptFR" value="">
+    <input type="hidden" name="editPromptDT" value="">
+    <input type="hidden" name="editPromptEN" value="">
 </form>
 <form method="POST">
     <input type="text" name="editPromptDT" value="" placeholder="Schreiben Sie Ihre Anfrage" />
-    <br/>
     <input type="submit" value="Go" />
+    <input type="hidden" name="editPromptES" value="">
+    <input type="hidden" name="editPromptPT" value="">
+    <input type="hidden" name="editPromptFR" value="">
+    <input type="hidden" name="editPromptEN" value="">
 </form>
 <form method="POST">
     <input type="text" name="editPromptFR" value="" placeholder="Écrivez votre demande" />
-    <br/>
     <input type="submit" value="Go" />
+    <input type="hidden" name="editPromptES" value="">
+    <input type="hidden" name="editPromptPT" value="">
+    <input type="hidden" name="editPromptDT" value="">
+    <input type="hidden" name="editPromptEN" value="">
 </form>
 <form method="POST">
     <input type="text" name="editPromptEN" value="" placeholder="Enter your query" />
-    <br/>
     <input type="submit" value="Go" />
+    <input type="hidden" name="editPromptES" value="">
+    <input type="hidden" name="editPromptPT" value="">
+    <input type="hidden" name="editPromptFR" value="">
+    <input type="hidden" name="editPromptDT" value="">
 </form>
--->
 
 <section th:each="item: ${data}">
     <p>TaskId: [[${item.taskId}]]</p>

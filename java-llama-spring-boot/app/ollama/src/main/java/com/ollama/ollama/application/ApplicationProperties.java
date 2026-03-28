@@ -1,4 +1,4 @@
-package com.ollama.ollama.component;
+package com.ollama.ollama.application;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

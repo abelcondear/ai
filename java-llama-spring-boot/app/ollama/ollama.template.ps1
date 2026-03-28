@@ -2,21 +2,59 @@
 
 param(
     [Parameter(Mandatory=$true)]
-    [string]$Z
+    [string]$UserPrompt
 )
 
-#Invoke-RestMethod -Uri "http://localhost:8080/home"
+#---------- -
+
+#$postParams = @{editPromptES='Hola'}
+
+#Invoke-WebRequest -Uri http://localhost:8080/home -Method POST -Body $postParams
+
+#StatusCode        : 200
+#StatusDescription :
+#Content           : <!DOCTYPE html>
+#<html>
+#<head>
+#<meta charset="UTF-8">
+#<title>ollama</title>
+#<style>
+#body { font-family: Arial, sans-serif;
+#text-align: center; padding: 50px; }
+#</style>
+#...
+#RawContent        : HTTP/1.1 200
+#Content-Language: es-ES
+#Transfer-Encoding: chunked
+#Content-Type: text/html;charset=UTF-8
+#Date: Wed, 25 Mar 2026 14:44:38 GMT
+#
+#<!DOCTYPE html>
+#<html>
+#<head>
+#<meta charset="UT...
+#Forms             : {}
+#Headers           : {[Content-Language, es-ES], [Transfer-Encoding,
+#                    chunked], [Content-Type,
+#                    text/html;charset=UTF-8], [Date, Wed, 25 Mar
+#                    2026 14:44:38 GMT]}
+#Images            : {}
+#InputFields       : {@{innerHTML=; innerText=; outerHTML=<INPUT
+#                    name=editPromptES placeholder="Escriba su
+#consulta">; outerText=; tagName=INPUT;
+#                    name=editPromptES; placeholder=Escriba su
+#                    consulta}, @{innerHTML=; innerText=;
+#                    outerHTML=<INPUT type=submit value=Go>;
+#                    outerText=; tagName=INPUT; type=submit;
+#                    value=Go}}
+#Links             : {}
+#ParsedHtml        : mshtml.HTMLDocumentClass
+#RawContentLength  : 1175
+
 
 #---------- -
 
-$chars=@{quote='"';singleQuote='''';equal='=';colon=':';braceOpen="{";braceClose="}";comma=',';dolar='$';
-semicolon=';';at='@';period='.';hyphen='-';underscore='_';parenthesisOpen="(";parenthesisClose=")";}
-
-#---------- -
-
-#---------- -
-
-$cmds=@{writeOutput='Write-Output'}
+$chars=@{quote='"';singleQuote='''';equal='=';colon=':';braceOpen="{";braceClose="}";comma=',';dolar='$'; semicolon=';';at='@';period='.';hyphen='-';underscore='_';parenthesisOpen="(";parenthesisClose=")"; squareBracketsOpen="[";squareBracketsClose="]";lessThan="<";greaterThan=">";}
 
 #---------- -
 
@@ -40,7 +78,23 @@ $contentType=@{name='Content-Type';value='application/json'}
 
 #---------- -
 
-$contentTypeVariable="{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}" -f $chars.quote, $chars.quote, $chars.quote, $contentType.name, $chars.quote, $chars.quote, $chars.quote, $chars.equal, $chars.singleQuote, $contentType.value, $chars.singleQuote
+$contentTypeVariable="{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}" -f $chars.quote,
+
+$chars.quote,
+$chars.quote,
+
+$contentType.name,
+
+$chars.quote,
+$chars.quote,
+
+$chars.quote,
+
+$chars.equal,
+
+$chars.singleQuote,
+$contentType.value,
+$chars.singleQuote
 
 #---------- -
 
@@ -48,7 +102,13 @@ $charSet=@{name='Charset';value='utf-8'}
 
 #---------- -
 
-$charSetVariable="{0}{1}{2}{3}{4}" -f $charSet.name, $chars.equal, $chars.singleQuote, $charSet.value, $chars.singleQuote
+$charSetVariable="{0}{1}{2}{3}{4}" -f $charSet.name,
+
+$chars.equal,
+
+$chars.singleQuote,
+$charSet.value,
+$chars.singleQuote
 
 #---------- -
 
@@ -56,24 +116,7 @@ $charSetVariable="{0}{1}{2}{3}{4}" -f $charSet.name, $chars.equal, $chars.single
 
 $model=@{name='model';value='llama3'}
 
-#$prompt=@{name='prompt';value='%%PROMPT%%'}
-
-#$promptParameterVariable='{0}{1}{2}{3}{4}{5}{6}' -f $chars.singleQuote,
-#
-#$chars.singleQuote,
-#$chars.singleQuote,
-#
-#$Prompt,
-#
-#$chars.singleQuote,
-#$chars.singleQuote,
-#
-#$chars.singleQuote
-
-#$prompt=@{name='prompt';value='Hello'}
-
-$prompt=@{name='prompt';value=$Z}
-#$prompt=@{name='prompt';value=$promptParameterVariable}
+$prompt=@{name='prompt';value=$UserPrompt}
 
 $stream=@{name='stream';value='false'}
 
@@ -106,7 +149,6 @@ $chars.quote,
 $chars.quote
 
 # ---------- -
-
 
 $promptVariable="{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}{12}{13}{14}" -f $chars.quote,
 
@@ -156,7 +198,25 @@ $stream.value
 
 $body=@{name='Body'}
 
-$bodyVariable="{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}" -f $body.name, $chars.equal, $chars.singleQuote, $chars.braceOpen, $modelVariable, $chars.comma, $promptVariable, $chars.comma, $streamVariable, $chars.braceClose, $chars.singleQuote
+$bodyVariable="{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}" -f $body.name,
+
+$chars.equal,
+
+$chars.singleQuote,
+
+$chars.braceOpen,
+
+$modelVariable,
+$chars.comma,
+
+$promptVariable,
+$chars.comma,
+
+$streamVariable,
+
+$chars.braceClose,
+
+$chars.singleQuote
 
 #---------- -
 
@@ -168,11 +228,42 @@ $invoke=@{command="Invoke-RestMethod";uriName="Uri";uriValue="params.Uri";method
 
 #---------- -
 
-$commandInvoke="{0} {1}{2} {3}{4} {5}{6} {7}{8} {9}{10} {11}{12} {13}{14} {15}{16}" -f $invoke.command, $chars.hyphen, $invoke.uriName, $chars.dolar, $invoke.uriValue, $chars.hyphen, $invoke.methodName, $chars.dolar, $invoke.methodValue, $chars.hyphen, $invoke.headersName, $chars.dolar, $invoke.headersValue, $chars.hyphen, $invoke.bodyName, $chars.dolar, $invoke.bodyValue
+$commandInvoke="{0} {1}{2} {3}{4} {5}{6} {7}{8} {9}{10} {11}{12} {13}{14} {15}{16}" -f $invoke.command,
+
+$chars.hyphen,
+$invoke.uriName,
+
+$chars.dolar,
+$invoke.uriValue,
+
+$chars.hyphen,
+$invoke.methodName,
+
+$chars.dolar,
+$invoke.methodValue,
+
+$chars.hyphen,
+$invoke.headersName,
+
+$chars.dolar,
+$invoke.headersValue,
+
+$chars.hyphen,
+$invoke.bodyName,
+
+$chars.dolar,
+$invoke.bodyValue
 
 #---------- -
 
-$headersKeyValueVariable="{0}{1}{2};{3};{4}" -f $chars.at, $chars.braceOpen, $contentTypeVariable, $charSetVariable, $chars.braceClose
+$headersKeyValueVariable="{0}{1}{2};{3};{4}" -f $chars.at,
+
+$chars.braceOpen,
+
+$contentTypeVariable,
+$charSetVariable,
+
+$chars.braceClose
 
 $headers=@{name='Headers';value=$headersKeyValueVariable}
 
@@ -182,128 +273,209 @@ $headersVariable="{0}{1}{2}" -f  $headers.name, $chars.equal, $headers.value
 
 #--- -----
 
-#$command="{0}{1}{2}{3}{4}{5};{6};{7};{8}{9};{10}{11};{12}" -f $chars.dolar, $params.name, $chars.equal, $chars
-# .at, $chars.braceOpen, $uriVariable, $methodVariable, $headersVariable, $bodyVariable, $chars.braceClose, $chars.dolar, $params.name, $commandInvoke
+$command="{0}{1}{2}{3}{4}{5};{6};{7};{8}{9};{10}" -f $chars.dolar,
 
-$command="{0}{1}{2}{3}{4}{5};{6};{7};{8}{9};{10}" -f $chars.dolar, $params.name, $chars.equal, $chars.at, $chars.braceOpen, $uriVariable, $methodVariable, $headersVariable, $bodyVariable, $chars.braceClose, $commandInvoke
+$params.name,
 
-#--- -----
+$chars.equal,
 
-Powershell -Command $command
-Exit
+$chars.at,
+$chars.braceOpen,
+
+$uriVariable,
+
+$methodVariable,
+
+$headersVariable,
+
+$bodyVariable,
+
+$chars.braceClose,
+
+$commandInvoke
+
+# overwrite variable to test -- ran successfully
+# overwrite variable to test -- ran successfully -- try II
+$command="{0}{1}{2}{3}{4}{5};{6};{7};{8}{9};
+
+#{10}{11}; # debug # disabled
+
+{12};
+" -f $chars.dolar,
+
+$params.name,
+
+$chars.equal,
+
+$chars.at,
+
+$chars.braceOpen,
+
+$uriVariable,
+$methodVariable,
+$headersVariable,
+$bodyVariable,
+
+$chars.braceClose,
+
+$chars.dolar, # debug purpose
+$params.name, # debug purpose
+
+$commandInvoke
+
 
 #--- -----
 
 $tryBegin="try {0}" -f $chars.braceOpen
-#Write-Output $tryBegin
-#Exit
+
+#--- -----
+
+#--- -----
+
+#    Write-Output {2}{3}{4}An error occurred{5}{6}{7}{8};
+#
+#    {9}errorMessage{10}{11}{12}{13}Exception{14}Message;
+#
+#    throw {15}System.Exception{16}{17}{18}new{19} {20}errorMessage{21};
+#
+#    {22}errorCode {23} {24}1;
+
+#throw {8}System.Exception{9}{10}{11}new{12} {13}errorMessage{14};
 
 #$tryEnd="{0} catch {1}
-#    Write-Output {2}{3}An error occurred{4}{5}{6}
-#    Write-Output {7}{8}{9}Exception{10}Message
-#
-#    {11}errorCode {12} {13}1
-#{14}
-#
-#    #if {14}{15}{16}{17}Exception {18}and {19}{20}{21}Exception{22}HResult{23} {24}
-#    #    {25}errorCode {26} {27}{28}{29}Exception{30}HResult
-#    #{31}
-#    #elseif {32}{33}{34}{35}Exception {36}and {37}{38}{39}Exception{40}InnerException {41}and
-#    #{42}{43}{44}Exception{45}InnerException{46}HResult{47} {48}
-#    #    {49}errorCode {50} {51}{52}{53}Exception{54}InnerException{55}HResult
-#    #{56}
-#
-#    #Write-Output {57}errorCode
-##{58}
+#    {2}errorMessage{3}{4}{5}{6}Exception{7}Message;
+
+#throw {8}System.Exception{9}{10}{11}new{12}{13}errorMessage{14};
+#{15}
 #" -f $chars.braceClose,
 
-$tryEnd="{0} catch {1}
-    Write-Output {2}{3}An error occurred{4}{5}{6}
-    Write-Output {7}{8}{9}Exception{10}Message
 
-    {11}errorCode {12} {13}1
-{14}
+$tryEnd="{0} catch {1}
+    {2}errorMessage{3}{4}String{5}{6}{7}Concat{8}
+    {9}{10}{11}{12}{13}{14}{15}{16}{17},
+    {18}{19}{20}Exception{21}Message,
+    {22}{23}{24}{25}{26}{27}{28}{29}{30}
+    {31};
+
+    throw {32}System.Exception{33}{34}{35}new{36}{37}errorMessage{38};
+{39}
 " -f $chars.braceClose,
+
+#[string]::Concat($string1, $string2)
+
 
 #catch {1}
 #Write-Output {2}{3}An error occurred{4}{5}{6}
 #Write-Output {7}{8}{00}Exception{9}Message
-$chars.braceOpen, $chars.quote,
-$chars.quote, $chars.colon, $chars.quote, $chars.quote, $chars.dolar, $chars.underscore, $chars.period, $chars.period,
 
-#{10}errorCode {11} {12}1
-#$chars.dolar, $chars.equal, $chars.hyphen
 
-# overwrite command
-$chars.dolar, $chars.equal, $chars.hyphen, $chars.braceClose
+#{0} catch {1}
+$chars.braceOpen,
 
-Write-Output $tryEnd
-Exit
+###old one. discarded
+###{2}errorMessage{3}{4}{5}{6}Exception{7}Message;
 
-#if {13}{14}{15}{16}Exception {17}and {18}{19}{20}Exception{21}HResult{22} {23}
-#{24}errorCode {25} {26}{27}{28}Exception{29}HResult
-#{30}
-#$chars.parenthesisOpen, $chars.dolar, $chars.underscore, $chars.period, $chars.hyphen, $chars.dolar, $chars
-# .underscore, $chars.period, $char.period, $chars.parenthesisClose, $chars.braceOpen, $chars.dolar, $chars.equal, $chars.dolar, $chars.underscore, $chars.period, $chars.period, $chars.braceClose,
+#{2}errorMessage{3}{4}{5}{6}{7}Concat{8}
+#{9}{10}{11}{12}{13}{14}{15}{16}{17},
+#{18}{19}{20}Exception{21}Message,
+#{22}{23}{24}{25}{26}{27}{28}{29}{30},
+#{31};
 
-#elseif {31}{32}{33}{34}Exception {35}and {36}{37}{38}Exception{39}InnerException {40}and{41}{42}{43}Exception{44}InnerException{45}HResult{46} {47}
+$chars.dolar,
+$chars.equal,
 
-#$chars.parenthesisOpen, $chars.dolar, $chars.underscore, $chars.period, $chars.hyphen, $chars.dolar, $chars
-# .underscore, $chars.period, $chars.period, $chars.hyphen, $chars.dolar, $chars.underscore, $chars.period, $chars.period, $chars.period, $chars.parenthesisClose, $chars.braceOpen,
+$chars.squareBracketsOpen,
+$chars.squareBracketsClose,
 
-#   {48}errorCode {49} {50}{51}{52}Exception{53}InnerException{54}HResult
-#{55}
-#$chars.dolar, $chars.equal, $chars.dolar, $chars.underscore, $chars.period, $chars.period, $chars.period,
-# $chars.braceClose,
+$chars.colon,
+$chars.colon,
 
-#   Write-Output {56}errorCode
-#{57}
-#$chars.dolar,
-#$chars.braceClose
+$chars.parenthesisOpen,
 
-# overwrite command
-$command="{0}{1}{2}{3}{4}{5};{6};{7};{8}{9};{10};" -f $chars.dolar, $params.name, $chars.equal, $chars.at, $chars.braceOpen, $uriVariable, $methodVariable, $headersVariable, $bodyVariable, $chars.braceClose, $commandInvoke
+$chars.quote,
+$chars.quote,
+$chars.quote,
 
-$command="    {0}" -f $command
+$chars.lessThan,
+$chars.lessThan,
+$chars.lessThan,
+
+$chars.quote,
+$chars.quote,
+$chars.quote,
+
+$chars.dolar,
+$chars.underscore,
+$chars.period,
+$chars.period,
+
+$chars.quote,
+$chars.quote,
+$chars.quote,
+
+$chars.greaterThan,
+$chars.greaterThan,
+$chars.greaterThan,
+
+$chars.quote,
+$chars.quote,
+$chars.quote,
+
+$chars.parenthesisClose,
+
+
+# ommitted
+#throw [System.Exception]::new("Custom error: Value cannot be zero.")
+
+# valid
+#throw [System.Exception]::new("Custom error: Value cannot be zero.")
+
+# using index parameters
+#throw {13}System.Exception{14}{15}{16}new({17}{18}{19} {00000} {20} {21}{19}{20}{21})
+
+# deprecated
+#throw {8}System.Exception{9}{10}{11}new{12}{13}errorMessage{14};
+
+#throw {32}System.Exception{33}{34}{35}new{36}{37}errorMessage{38};
+$chars.squareBracketsOpen,
+$chars.squareBracketsClose,
+
+$chars.colon,
+$chars.colon,
+
+$chars.parenthesisOpen,
+
+$chars.dolar,
+
+$chars.parenthesisClose,
+
+###{15}
+#{39}
+$chars.braceClose
+
+#Write-Output $tryEnd
+#Exit
+
+#--- -----
+
+$command = $command.replace("`r`n","`r`n    ")
+
+#--- -----
 
 $command="{0}
     {1}
-{2}" -f $tryBegin, $command, $tryEnd
+{2}" -f $tryBegin, $command , $tryEnd
 
 Write-Output $command
+Powershell -Command $command
 
-#Write-Output "------"
-#Write-Output $tryBegin
-#Write-Output $command
-##Write-Output "------"
-#Write-Output $tryEnd
-#Write-Output "------"
-#Exit
-
-# try-catch -- should be inside $command (string)
-#Powershell -Command $command
-
-#--- --
-
-#try {
-#    # Force an error if the file doesn't exist
-#    $content = Get-Content -Path "C:\nonexistent\file.txt" -ErrorAction Stop
-#    Write-Host "File content loaded successfully."
-#}
-#catch {
-#    # $_ contains the current error object
-#    Write-Host "An error occurred:" -ForegroundColor Red
-#    Write-Host $_.Exception.Message -ForegroundColor Yellow  # Short message
-#    Write-Host "Full error details:" -ForegroundColor Cyan
-#    Write-Host $_.ToString()                                 # Full error text
-#}
-#finally {
-#    Write-Host "Execution finished." -ForegroundColor Green
-#}
+#--- -----
 
 # ------------------
 # Example Response
 # ------------------
+
+# POST Method
 
 # Name                           Value
 # ----                           -----
@@ -311,6 +483,10 @@ Write-Output $command
 # Body                           {"model":"llama3","prompt":"hello","stream":false}
 # Headers                        {Charset, Content-Type}
 # Uri                            http://127.0.0.1:11434/api/generate
+
+# -------
+
+# API Result
 
 # model                : llama3
 # created_at           : 2026-03-16T02:30:40.5615084Z
@@ -325,3 +501,5 @@ Write-Output $command
 # prompt_eval_duration : 27274012100
 # eval_count           : 26
 # eval_duration        : 52159968700
+
+# -------

@@ -2,11 +2,10 @@ package com.ollama.ollama.model;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import static com.ollama.ollama.component.ApplicationProperties.AppName;
+import static com.ollama.ollama.application.ApplicationProperties.AppName;
 import static java.lang.ProcessBuilder.startPipeline;
 import java.io.IOException;
 

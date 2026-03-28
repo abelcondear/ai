@@ -28,7 +28,7 @@ public class TrackedEventService {
 
     public String triggerTrackedEvent(String prompt) {
         this.taskId = UUID.randomUUID().toString();
-        //String taskId = UUID.randomUUID().toString();
+//        // //String taskId = UUID.randomUUID().toString();
         TaskPrompt taskPrompt = new TaskPrompt();
 
         taskPrompt.setPrompt(prompt);
@@ -39,6 +39,8 @@ public class TrackedEventService {
         this.taskPrompt = promptStore.getPrompt(this.taskId);
 
         publisher.publishEvent(trackedEvent);
+
         return taskId;
+        //return "_";
     }
 }
