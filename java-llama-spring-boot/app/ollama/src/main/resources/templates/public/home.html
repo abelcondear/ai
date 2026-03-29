@@ -22,6 +22,7 @@
     <input type="hidden" name="editPromptDT" value="">
     <input type="hidden" name="editPromptEN" value="">
 </form>
+<br/>
 <form method="POST">
     <input type="text" name="editPromptPT" value="" placeholder="Escreva seu pedido" />
     <input type="submit" value="Go" />
@@ -30,6 +31,7 @@
     <input type="hidden" name="editPromptDT" value="">
     <input type="hidden" name="editPromptEN" value="">
 </form>
+<br/>
 <form method="POST">
     <input type="text" name="editPromptDT" value="" placeholder="Schreiben Sie Ihre Anfrage" />
     <input type="submit" value="Go" />
@@ -38,6 +40,7 @@
     <input type="hidden" name="editPromptFR" value="">
     <input type="hidden" name="editPromptEN" value="">
 </form>
+<br/>
 <form method="POST">
     <input type="text" name="editPromptFR" value="" placeholder="Écrivez votre demande" />
     <input type="submit" value="Go" />
@@ -46,6 +49,7 @@
     <input type="hidden" name="editPromptDT" value="">
     <input type="hidden" name="editPromptEN" value="">
 </form>
+<br/>
 <form method="POST">
     <input type="text" name="editPromptEN" value="" placeholder="Enter your query" />
     <input type="submit" value="Go" />
@@ -55,8 +59,11 @@
     <input type="hidden" name="editPromptDT" value="">
 </form>
 
+<br/>
+<br/>
+
 <section th:each="item: ${data}">
-    <p>TaskId: [[${item.taskId}]]</p>
+    <!-- <p>TaskId: [[${item.taskId}]]</p> -->
     <p th:if="${not #strings.isEmpty(item.prompt)}">Prompt: [[${item.prompt}]]</p>
     <p th:if="${not #strings.isEmpty(item.response)}">Response: [[${item.response}]]</p>
     <p th:if="${not #strings.isEmpty(item.error)}">Error: [[${item.error}]]</p>
@@ -65,7 +72,6 @@
 
 <br/>
 <br/>
-
 </body>
 </html>
 

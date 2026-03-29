@@ -122,6 +122,7 @@ public class TrackedEventController {
         System.out.println();
         System.out.printf("editPromptFR: %s", editPromptFR);
         System.out.println();
+        System.out.println();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         this.model.addAttribute("currentDate", LocalDateTime.now().format(formatter));

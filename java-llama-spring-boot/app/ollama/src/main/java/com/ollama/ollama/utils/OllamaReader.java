@@ -33,8 +33,13 @@ public class OllamaReader {
         String commandPs = String.format(
                 "\"[Console]::OutputEncoding=[System.Text.Encoding]::UTF8; powershell -File '%s' -UserPrompt '%s'\"",
                 psTemplateScript,
-                prompt
+                prompt.replace(
+                        "'",
+                        "''"
+                )
         );
+
+        System.out.printf("%s\n\n", commandPs);
 
         ProcessBuilder pbuilder = new ProcessBuilder(
                 "powershell",

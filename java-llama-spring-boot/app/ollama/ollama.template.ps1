@@ -118,6 +118,8 @@ $model=@{name='model';value='llama3'}
 
 $prompt=@{name='prompt';value=$UserPrompt}
 
+#$prompt.value=$prompt.value.Replace("`'","`'`'")
+
 $stream=@{name='stream';value='false'}
 
 #---------- -
@@ -169,7 +171,7 @@ $chars.quote,
 $chars.quote,
 $chars.quote,
 
-$prompt.value, 
+$prompt.value.Replace("'","''"),
 
 $chars.quote,
 $chars.quote,
