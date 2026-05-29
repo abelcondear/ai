@@ -10,7 +10,12 @@ repositories {
 }
 
 dependencies {
+    implementation("org.scala-lang:scala3-library_3:3.1.3")
+    
     implementation("org.pmml4s:pmml4s_3:1.5.8")
+
+    implementation("org.rosuda.REngine:Rserve:1.8.1")
+    implementation("org.rosuda.REngine:REngine:2.1.0")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
