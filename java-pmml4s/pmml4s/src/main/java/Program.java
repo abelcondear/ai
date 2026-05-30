@@ -1,47 +1,14 @@
 import org.pmml4s.model.Model;
 import java.io.*;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
+import misc.Utils;
 
 public class Program {
-    private Model model;
+    private final Utils utils = new Utils();
 
     public Program() throws URISyntaxException {
         //TODO
-    }
-
-    public String GetFilePath(String filename) throws URISyntaxException {
-        URL resource = Program
-                        .class
-                        .getClassLoader()
-                        .getResource(filename);
-        String path;
-
-        if (resource != null) {
-            File file = new File(resource.toURI());
-            path = file.getAbsolutePath();
-        }
-        else {
-            path = "";
-        }
-
-        return path;
-    }
-
-    public Double getRegressionValue(Map<String, Double>
-                                             values) {
-        Object[] valuesMap =
-                Arrays.stream
-                (
-                    model.inputNames()
-                )
-                .map(values::get)
-                .toArray();
-
-        Object[] result = model.predict(valuesMap);
-
-        return (Double) result[0];
     }
 
     public void main(String[] args) throws
@@ -49,7 +16,8 @@ public class Program {
             URISyntaxException, InterruptedException {
 
         // CSV exists as file source
-        String path = GetFilePath("Elnino.csv");
+        String path = utils.GetFilePath("Elnino.csv");
+
         String directory = path.substring(
                                 0,
                                 path.lastIndexOf("\\")
@@ -97,10 +65,9 @@ public class Program {
         System.out.println(" -------------------------- ");
 
         // ----
-
-        model = Model.fromFile(
+        Model model = Model.fromFile(
                 new File(
-                        GetFilePath("Elnino.pmml")
+                        utils.GetFilePath("Elnino.pmml")
                 )
         );
 
@@ -117,7 +84,7 @@ public class Program {
             "s_s_temp",  0d
         );
 
-        double predicted = getRegressionValue(values);
+        double predicted = utils.getRegressionValue(model, values);
 
         System.out.println(" -------------------------- ");
         System.out.println(" Predicted value: ");
