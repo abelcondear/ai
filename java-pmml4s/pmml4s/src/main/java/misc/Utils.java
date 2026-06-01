@@ -1,7 +1,6 @@
 package misc;
 
 import org.pmml4s.model.Model;
-
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -13,11 +12,14 @@ public class Utils {
         //TODO
     }
 
-    public String GetFilePath(String filename) throws URISyntaxException {
+    public String GetFilePath(String filename)
+            throws URISyntaxException
+    {
         URL resource = Utils
                 .class
                 .getClassLoader()
                 .getResource(filename);
+
         String path;
 
         if (resource != null) {
@@ -31,13 +33,16 @@ public class Utils {
         return path;
     }
 
-    public Double getRegressionValue(Model model, Map<String, Double>
-                                             values) {
+    public Double getRegressionValue
+    (
+        Model model,
+        Map<String, Double> values
+    ) {
         Object[] valuesMap =
                 Arrays.stream
-                                (
-                                        model.inputNames()
-                                )
+                        (
+                            model.inputNames()
+                        )
                         .map(values::get)
                         .toArray();
 
@@ -45,5 +50,4 @@ public class Utils {
 
         return (Double) result[0];
     }
-
 }

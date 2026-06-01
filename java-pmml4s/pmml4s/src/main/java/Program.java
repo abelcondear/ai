@@ -7,21 +7,24 @@ import misc.Utils;
 public class Program {
     private final Utils utils = new Utils();
 
-    public Program() throws URISyntaxException {
+    public Program() {
         //TODO
     }
 
     public void main(String[] args) throws
-            IOException,
-            URISyntaxException, InterruptedException {
-
+        IOException,
+        URISyntaxException,
+        InterruptedException
+    {
         // CSV exists as file source
         String path = utils.GetFilePath("Elnino.csv");
 
-        String directory = path.substring(
-                                0,
-                                path.lastIndexOf("\\")
-                            );
+        String directory =
+                        path.substring
+                        (
+                            0,
+                            path.lastIndexOf("\\")
+                        );
 
         String project_name = "pmml4s";
 
@@ -29,12 +32,14 @@ public class Program {
         // 10 iterations as maximum iteration
         for (int x = 0; x < 10; x ++) {
             if (
-                    directory.indexOf(
-                            "\\" + project_name + "\\",
-                            directory.lastIndexOf("\\")
-                    ) != -1
+                directory.indexOf
+                (
+                    "\\" + project_name + "\\",
+                    directory.lastIndexOf("\\")
+                ) != -1
             ) {
-                directory = directory.substring(
+                directory = directory.substring
+                (
                     0,
                     directory.lastIndexOf("\\")
                 );
@@ -45,14 +50,16 @@ public class Program {
         // This is taken from .\build\resources\main\
         String filePath = directory + "\\ToPMML.R";
 
-        String commandPath = "c:\\Program Files\\" +
+        // RTerm command path
+        String commandPath = "C:\\Program Files\\" +
                             "R\\R-4.5.1\\bin\\x64\\" +
                             ".\\Rterm";
 
-        ProcessBuilder pb = new ProcessBuilder(
-                commandPath, // command
-                "-f", // file
-                "\"" + filePath + "\"" // file path to be executed
+        ProcessBuilder pb = new ProcessBuilder
+        (
+            commandPath, // command
+            "-f", // file
+            "\"" + filePath + "\"" // R file script path to be executed
         );
         pb.inheritIO();
         Process p = pb.start();
@@ -60,18 +67,29 @@ public class Program {
         // Wait process to be finished
         int exitCode = p.waitFor();
 
-        System.out.println(" -------------------------- ");
-        System.out.println("Process exit code:" + String.format(" %d", exitCode));
-        System.out.println(" -------------------------- ");
+        System.out.println
+        (
+            " -------------------------- "
+        );
+        System.out.println
+        (
+            "Process exit code:" +
+            String.format(" %d", exitCode)
+        );
+        System.out.println
+        (
+            " -------------------------- "
+        );
 
         // ----
         Model model = Model.fromFile(
                 new File(
-                        utils.GetFilePath("Elnino.pmml")
+                    utils.GetFilePath("Elnino.pmml")
                 )
         );
 
-        Map<String, Double> values = Map.of(
+        Map<String, Double> values = Map.of
+        (
             "buoy_day_ID", 776d,
             "buoy", 59d,
             "day", 7d,
@@ -81,15 +99,24 @@ public class Program {
             "mer_winds", 0d,
             "humidity", 89.50d,
             "airtemp", 27.51d,
-            "s_s_temp",  0d
+            "s_s_temp",  0d // this value will be predicted
         );
 
         double predicted = utils.getRegressionValue(model, values);
 
-        System.out.println(" -------------------------- ");
+        System.out.println
+        (
+            " -------------------------- "
+        );
         System.out.println(" Predicted value: ");
-        System.out.println(String.format(" %.10f", predicted));
-        System.out.println(" -------------------------- ");
+        System.out.println
+        (
+            String.format(" %.10f", predicted)
+        );
+        System.out.println
+        (
+            " -------------------------- "
+        );
         System.out.println();
 
 //      ::: Output Console :::
@@ -98,6 +125,5 @@ public class Program {
 //       real value: 29,2236885246
 //       s_s_temp (k10): 29.22d
 //      --------------------------
-
     }
 }

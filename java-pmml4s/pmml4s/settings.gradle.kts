@@ -1,1 +1,1 @@
-rootProject.name = "pmml4s"
+"pmml4s".also { rootProject.name = it }
