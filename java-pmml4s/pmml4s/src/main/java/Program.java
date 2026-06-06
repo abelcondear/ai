@@ -2,10 +2,12 @@ import org.pmml4s.model.Model;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
-import misc.Utils;
+import file.FileUtils;
+import model.ModelUtils;
 
 public class Program {
-    private final Utils utils = new Utils();
+    private final FileUtils fileUtils = new FileUtils();
+    private final ModelUtils modelUtils = new ModelUtils();
 
     public Program() {
         //TODO
@@ -17,7 +19,7 @@ public class Program {
         InterruptedException
     {
         // CSV exists as file source
-        String path = utils.GetFilePath("Elnino.csv");
+        String path = fileUtils.GetFilePath("Elnino.csv");
 
         String directory =
                         path.substring
@@ -84,7 +86,7 @@ public class Program {
         // ----
         Model model = Model.fromFile(
                 new File(
-                    utils.GetFilePath("Elnino.pmml")
+                    fileUtils.GetFilePath("Elnino.pmml")
                 )
         );
 
@@ -102,7 +104,7 @@ public class Program {
             "s_s_temp",  0d // this value will be predicted
         );
 
-        double predicted = utils.getRegressionValue(model, values);
+        double predicted = modelUtils.getRegressionValue(model, values);
 
         System.out.println
         (
