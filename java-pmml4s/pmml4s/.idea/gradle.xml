@@ -8,7 +8,7 @@
         <option name="gradleJvm" value="ms-25" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../../../../../../../../Users/scott/Documents/Me/Programs/ai/pmml4s/pmml4s_v2.6/pmml4s" />
+            <option value="$PROJECT_DIR$" />
           </set>
         </option>
       </GradleProjectSettings>
