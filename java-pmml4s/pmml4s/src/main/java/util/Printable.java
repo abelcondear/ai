@@ -13,7 +13,7 @@ public class Printable {
         System.out.println
         (
             "Process exit code:" +
-                    String.format(" %d", value)
+            String.format(" %d", value)
         );
         System.out.println
         (
@@ -29,7 +29,7 @@ public class Printable {
         System.out.println(" Predicted value: ");
         System.out.println
         (
-                String.format(" %.10f", value)
+            String.format(" %.10f", value)
         );
         System.out.println
         (

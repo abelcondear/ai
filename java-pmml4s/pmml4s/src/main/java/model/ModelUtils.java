@@ -43,6 +43,7 @@ public class ModelUtils {
 
         return values;
     }
+
     public Double getRegressionValue
             (
                     Model model,
