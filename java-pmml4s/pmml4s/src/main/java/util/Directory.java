@@ -1,8 +1,11 @@
+// ----
 package util;
 // ----
 import java.net.URISyntaxException;
+import java.util.Locale;
 // ----
 import file.FileUtils;
+import util.DetectOS;
 // ----
 
 public class Directory {
@@ -14,27 +17,29 @@ public class Directory {
         // CSV exists as file source
         String path = fileUtils.GetFilePath("Elnino.csv");
 
+        String slash =  (DetectOS.isLinux()) ? "/":"\\";
+
         String directory =
                 path.substring
-                (
-                    0,
-                    path.lastIndexOf("\\")
-                );
+                        (
+                            0,
+                            path.lastIndexOf(slash)
+                        );
 
         // searching project name ("pmml4s")
         // 10 iterations as maximum iteration
         for (int x = 0; x < 10; x ++) {
             if (
-                directory.indexOf
-                (
-                    "\\" + project_name + "\\",
-                    directory.lastIndexOf("\\")
-                ) != -1
+                    directory.indexOf
+                            (
+                                slash + project_name + slash,
+                                directory.lastIndexOf(slash)
+                            ) != -1
             ) {
                 directory = directory.substring
                         (
                             0,
-                            directory.lastIndexOf("\\")
+                            directory.lastIndexOf(slash)
                         );
                 break;
             }

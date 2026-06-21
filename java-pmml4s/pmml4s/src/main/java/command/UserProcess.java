@@ -1,21 +1,36 @@
+// ----
 package command;
 // ----
 import java.io.IOException;
 // ----
+import util.DetectOS;
+// ----
+
 
 public class UserProcess {
     public UserProcess() { /* TODO */ }
 
     public java.lang.Process Run(String commandPath, String filePath) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder
-                (
+        ProcessBuilder pb;
+
+        if (DetectOS.isLinux()) {
+            pb = new ProcessBuilder
+                    (
+                        commandPath, // command
+                        String.format("%s", filePath) // R file script path to be executed
+                    );
+        }
+        else {
+            pb = new ProcessBuilder
+                    (
                         commandPath, // command
                         "-f", // file
-                        "\"" + filePath + "\"" // R file script path to be executed
-                );
-        pb.inheritIO();
-        java.lang.Process p = pb.start();
+                        String.format("\"%s\"", filePath) // R file script path to be executed
+                    );
+        }
 
-        return p;
+        pb.inheritIO();
+
+        return (pb.start());
     }
 }

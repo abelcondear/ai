@@ -7,6 +7,7 @@ import java.lang.Process;
 import model.ModelUtils;
 import util.Directory;
 import util.Printable;
+import util.DetectOS;
 import command.UserProcess;
 // ----
 
@@ -22,26 +23,49 @@ public class Program {
     {
         // ----
         String project_name = "pmml4s";
+        // ----
 
         // ----
         Directory dir = new Directory();
         String directory = dir.getRFilePath(project_name);
+        // ----
 
         // execute command
         UserProcess process = new UserProcess();
-        Process p = process.Run
-                (
-                    "C:\\Program Files\\" +
+
+        Process p;
+        String commandLine = "";
+        String absolutePath = "";
+
+        if (DetectOS.isLinux()) {
+            commandLine = "/bin/Rscript";
+            absolutePath = directory + "/ToPMML.R";
+
+            p = process.Run
+                    (
+                        commandLine,
+                        absolutePath
+                    );
+        }
+        else {
+            commandLine = "C:\\Program Files\\" +
                     "R\\R-4.5.1\\bin\\x64\\" +
-                    ".\\Rterm",
-                    directory + "\\ToPMML.R"
-                );
+                    ".\\Rterm";
+            absolutePath = directory + "\\ToPMML.R";
+
+            p = process.Run
+                    (
+                        commandLine,
+                        absolutePath
+                    );
+        }
 
         Printable printOutput = new Printable();
 
-        // Wait process to be finished
+        // Wait process to be finished ----
         int exitCode = p.waitFor();
         printOutput.PrintExitCode(exitCode);
+        // ----
 
         // ----
         double predicted = modelUtils.getRegressionValue
@@ -50,5 +74,6 @@ public class Program {
                     modelUtils.createValues()
                 );
         printOutput.PrintPredictedValue(predicted);
+        // ----
     }
 }

@@ -1,3 +1,4 @@
+// ----
 package model;
 // ----
 import org.pmml4s.model.Model;
@@ -16,13 +17,11 @@ public class ModelUtils {
     public Model createModel(String filename) throws URISyntaxException {
         FileUtils fileUtils = new FileUtils();
 
-        Model model = Model.fromFile(
+        return Model.fromFile(
                 new File(
                         fileUtils.GetFilePath(filename)
                 )
         );
-
-        return model;
     }
 
     public Map<String, Double> createValues()
