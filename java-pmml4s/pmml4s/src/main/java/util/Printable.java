@@ -53,12 +53,5 @@ public class Printable {
             " -------------------------- "
         );
         System.out.println();
-
-        // ::: Output Console :::
-        // --------------------------
-        //  Predicted value:
-        //  real value: 29,2236885246
-        //  s_s_temp (k10): 29.22d
-        // --------------------------
     }
 }

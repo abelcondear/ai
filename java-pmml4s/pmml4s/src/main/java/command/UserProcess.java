@@ -2,6 +2,7 @@
 package command;
 // ----
 import java.io.IOException;
+import java.lang.Process;
 // ----
 import util.DetectOS;
 // ----
@@ -10,7 +11,7 @@ import util.DetectOS;
 public class UserProcess {
     public UserProcess() { /* TODO */ }
 
-    public java.lang.Process Run(String commandPath, String filePath) throws IOException {
+    public Process Run(String commandPath, String filePath) throws IOException {
         ProcessBuilder pb;
 
         if (DetectOS.isLinux()) {

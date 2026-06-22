@@ -44,10 +44,13 @@ public class Program {
         else {
             // ----
             UserProcess process = new UserProcess();
+            // ----
 
+            // ----
             Process p;
             String commandLine = "";
             String absolutePath = "";
+            // ----
 
             if (DetectOS.isLinux()) {
                 // ----
@@ -93,6 +96,14 @@ public class Program {
                         modelUtils.createValues()
                     );
             printOutput.PrintPredictedValue(predicted);
+
+            // ::: Output Console :::
+            // --------------------------
+            //  Predicted value:
+            //   real value: 29,2236885246
+            //   s_s_temp (k10): 29.22d
+            // --------------------------            
+            
             // ----
         }
     }
