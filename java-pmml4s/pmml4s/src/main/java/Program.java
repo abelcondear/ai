@@ -30,50 +30,70 @@ public class Program {
         String directory = dir.getRFilePath(project_name);
         // ----
 
-        // execute command
-        UserProcess process = new UserProcess();
-
-        Process p;
-        String commandLine = "";
-        String absolutePath = "";
-
-        if (DetectOS.isLinux()) {
-            commandLine = "/bin/Rscript";
-            absolutePath = directory + "/ToPMML.R";
-
-            p = process.Run
-                    (
-                        commandLine,
-                        absolutePath
-                    );
-        }
-        else {
-            commandLine = "C:\\Program Files\\" +
-                    "R\\R-4.5.1\\bin\\x64\\" +
-                    ".\\Rterm";
-            absolutePath = directory + "\\ToPMML.R";
-
-            p = process.Run
-                    (
-                        commandLine,
-                        absolutePath
-                    );
-        }
-
+        // ----
         Printable printOutput = new Printable();
 
-        // Wait process to be finished ----
-        int exitCode = p.waitFor();
-        printOutput.PrintExitCode(exitCode);
-        // ----
+        if (!DetectOS.isLinux() && !DetectOS.isWindows()) {
+            // ----
+            printOutput.PrintMessageValue
+            (
+                "Program can be only executed under Windows or Linux environment."
+            );
+            // ----                        
+        }
+        else {
+            // ----
+            UserProcess process = new UserProcess();
 
-        // ----
-        double predicted = modelUtils.getRegressionValue
-                (
-                    modelUtils.createModel("Elnino.pmml"),
-                    modelUtils.createValues()
-                );
-        printOutput.PrintPredictedValue(predicted);
-        // ----
+            Process p;
+            String commandLine = "";
+            String absolutePath = "";
+
+            if (DetectOS.isLinux()) {
+                // ----
+                commandLine = "/bin/Rscript";
+                absolutePath = directory + "/ToPMML.R";
+
+                p = process.Run
+                        (
+                            commandLine,
+                            absolutePath
+                        );
+                // ----
+
+                // Wait process to be finished ----
+                int exitCode = p.waitFor();
+                printOutput.PrintExitCode(exitCode);
+                // ----
+            }
+            else if (DetectOS.isWindows()) {
+                // ----
+                commandLine = "C:\\Program Files\\" +
+                        "R\\R-4.5.1\\bin\\x64\\" +
+                        ".\\Rterm";
+                absolutePath = directory + "\\ToPMML.R";
+
+                p = process.Run
+                        (
+                            commandLine,
+                            absolutePath
+                        );
+                // ----
+
+                // Wait process to be finished ----
+                int exitCode = p.waitFor();
+                printOutput.PrintExitCode(exitCode);
+                // ----
+            }
+
+            // ----
+            double predicted = modelUtils.getRegressionValue
+                    (
+                        modelUtils.createModel("Elnino.pmml"),
+                        modelUtils.createValues()
+                    );
+            printOutput.PrintPredictedValue(predicted);
+            // ----
+        }
     }
 }

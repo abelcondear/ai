@@ -3,7 +3,6 @@ package util;
 // ----
 
 public class Printable {
-
     public Printable(){ /* TODO */ }
 
     public void PrintExitCode(int value) {
@@ -20,6 +19,23 @@ public class Printable {
         (
             " -------------------------- "
         );
+    }
+
+    public void PrintMessageValue(String value) {
+        System.out.println
+        (
+            " -------------------------- "
+        );
+        System.out.println("Message: ");
+        System.out.println
+        (
+            String.format(" %s", value)
+        );
+        System.out.println
+        (
+            " -------------------------- "
+        );
+        System.out.println();
     }
 
     public void PrintPredictedValue(double value) {
