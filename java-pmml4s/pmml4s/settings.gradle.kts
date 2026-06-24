@@ -1,1 +1,0 @@
-"pmml4s".also { rootProject.name = it }
