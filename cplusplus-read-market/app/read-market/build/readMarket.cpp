@@ -16,6 +16,7 @@
 // cmake --build . --config Release
 // cmake -S . -B ./build/
 // cmake -DCMAKE_PREFIX_PATH=$(python3 -c "import torch; print(torch.utils.cmake_prefix_path)")
+// cp readMarket.cpp ./build/ && cmake --build ./build --config Release && ./build/readMarket > output.log
 // ---------------------------
 
 enum lineType {
@@ -56,8 +57,11 @@ struct CustomModel : torch::nn::Module {
     }
 };
 
-CustomModel getModel(float values[5][3]) {
-    CustomModel module(3, 5, 1);
+//CustomModel getModel(float values[5][3]) {
+//parameter values (data type updated)
+CustomModel getModel(std::vector<std::vector<float>> values) {
+    // update model parameters - regarding columns and rows size from values
+    CustomModel module(values[0].size(), values.size(), 1);
 
     // CustomModel ----
     //  3=columns
@@ -68,7 +72,10 @@ CustomModel getModel(float values[5][3]) {
     torch::Tensor input_tensor;
     torch::Tensor input;
 
-    for (int x = 0; x < 5; x ++) {
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    for (int x = 0; x < values.size(); x ++) {
     	input_tensor = torch::tensor(
         	{
 			values[x][0],
@@ -122,6 +129,13 @@ CustomModel readCSV
 ) {
 	CustomModel model(1, 1, 1); //create model using initial values by default
 
+	int numLines = 0;
+	std::ifstream in(filePath);
+	std::string unused;
+
+	while ( std::getline(in, unused) )
+   		++ numLines;
+
 	std::ifstream file(filePath);
 
 	if (!file.is_open()) {
@@ -133,7 +147,11 @@ CustomModel readCSV
 
 	std::vector<std::vector<std::string>> rows;
 
-	float values[5][3]; //array fixed based into csv file format
+	//these values should be set according to csv file
+    	int config_rows = numLines, config_cols = 3; //rows could be any value as cols
+
+	//change values (fixed array) into values (dynamic array)
+	std::vector<std::vector<float>> values(config_rows, std::vector<float>(config_cols, 0.0f));
 
 	while (std::getline(file, line)) {
 		std::stringstream lineStream(line);
@@ -168,8 +186,6 @@ CustomModel readCSV
 
 				std::cout << "value: " << value << std::endl;
 
-				//should be reviewed ...
-				//it is not storing values correctly
 				values[n_row-1][n_col-1] = std::stof(value);
 
 				//if (lnType == lineType::individual && n_col == column) {
@@ -188,7 +204,10 @@ CustomModel readCSV
 		}
 	}
 
+	std::cout << std::endl;
+
 	model = getModel(values);
+
 	file.close();
 
 	return model;
