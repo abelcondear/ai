@@ -12,60 +12,61 @@
 // ---------------------------
 // linux terminal command
 // ---------------------------
-// apt install python3-torch
-// cmake --build . --config Release
-// cmake -S . -B ./build/
-// cmake -DCMAKE_PREFIX_PATH=$(python3 -c "import torch; print(torch.utils.cmake_prefix_path)")
-// cp readMarket.cpp ./build/ && cmake --build ./build --config Release && ./build/readMarket > output.log
+//  apt install python3-torch
+//  cmake --build . --config Release
+//  cmake -S . -B ./build/
+//  cmake -DCMAKE_PREFIX_PATH=$(python3 -c "import torch; print(torch.utils.cmake_prefix_path)")
+//  cp readMarket.cpp ./build/ && cmake --build ./build --config Release && ./build/readMarket
+//  cp readMarket.cpp ./build/ && cmake --build ./build --config Release && ./build/readMarket > output.log && nano output.log
 // ---------------------------
 
 enum lineType {
-	all=0,
-	individual=1
+	all		= 0,
+	individual	= 1
 };
 
 enum splitType {
-	blankChar=' ',
-	tabChar='\t',
-	commaChar=','
+	blank		= ' ',
+	tab		= '\t',
+	comma		= ',',
+	semicolon	= ';'
 };
 
 struct CustomModel : torch::nn::Module {
-    torch::nn::Linear fc1{nullptr};
-    torch::nn::Linear fc2{nullptr};
+	torch::nn::Linear fc1{nullptr};
+	torch::nn::Linear fc2{nullptr};
 
-    CustomModel(
-        int64_t input_size,
-        int64_t hidden_size,
-        int64_t output_size
-    ) {
-        fc1 = register_module("fc1", torch::nn::Linear(input_size, hidden_size));
-        fc2 = register_module("fc2", torch::nn::Linear(hidden_size, output_size));
-    }
+	CustomModel(
+		int64_t input_size,
+		int64_t hidden_size,
+		int64_t output_size
+    	) {
+        	fc1 = register_module("fc1", torch::nn::Linear(input_size, hidden_size));
+        	fc2 = register_module("fc2", torch::nn::Linear(hidden_size, output_size));
+    	}
 
-    torch::Tensor forward(torch::Tensor x) {
-	//convert all tensor elements to float type by default
-        x = x.to(torch::kFloat32);
+    	torch::Tensor forward(torch::Tensor x) {
+		//convert all tensor elements to float type by default
+        	x = x.to(torch::kFloat32);
 
-        //convert it into one dimension before executing forward method
-        x = x.reshape(x.sizes());
+        	//convert it into one dimension before executing forward method
+        	x = x.reshape(x.sizes());
 
-        x = torch::relu(fc1->forward(x));
-        x = fc2->forward(x);
+        	x = torch::relu(fc1->forward(x));
+        	x = fc2->forward(x);
 
-        return x;
-    }
+        	return x;
+    	}
 };
 
 //CustomModel getModel(float values[5][3]) {
 //parameter values (data type updated)
 CustomModel getModel(std::vector<std::vector<float>> values) {
-    // update model parameters - regarding columns and rows size from values
     CustomModel module(values[0].size(), values.size(), 1);
 
     // CustomModel ----
-    //  3=columns
-    //  5=rows
+    //  values[0].size()=columns
+    //  values.size()=rows
     //  1=depth
     // ---------------
 
@@ -80,16 +81,24 @@ CustomModel getModel(std::vector<std::vector<float>> values) {
         	{
 			values[x][0],
 			values[x][1],
-			values[x][2]
+			values[x][2],
+			values[x][3],
+			values[x][4],
+			values[x][5]
 		},
         	torch::kFloat32
     	);
 
 	std::cout << "--------------------------" << std::endl;
 	std::cout << "values [row=" << (x + 1) << "]:" << std::endl;
+	std::cout << std::endl;
 	std::cout << values[x][0] << std::endl;
 	std::cout << values[x][1] << std::endl;
 	std::cout << values[x][2] << std::endl;
+	std::cout << values[x][3] << std::endl;
+	std::cout << values[x][4] << std::endl;
+	std::cout << values[x][5] << std::endl;
+	std::cout << std::endl;
 	std::cout << "--------------------------" << std::endl;
 
 	std::cout << std::endl;
@@ -136,6 +145,8 @@ CustomModel readCSV
 	while ( std::getline(in, unused) )
    		++ numLines;
 
+	-- numLines; // do not count headers (first line)
+
 	std::ifstream file(filePath);
 
 	if (!file.is_open()) {
@@ -148,7 +159,13 @@ CustomModel readCSV
 	std::vector<std::vector<std::string>> rows;
 
 	//these values should be set according to csv file
-    	int config_rows = numLines, config_cols = 3; //rows could be any value as cols
+	//according to csv file (dynamically setted)
+    	int config_rows = numLines;
+
+	//according to csv file (statically setted)
+	//(could be change to dynamical setting later)
+	//(columns with numeric value)
+	int config_cols = 6;
 
 	//change values (fixed array) into values (dynamic array)
 	std::vector<std::vector<float>> values(config_rows, std::vector<float>(config_cols, 0.0f));
@@ -158,7 +175,11 @@ CustomModel readCSV
 		std::string cell;
 		std::vector<std::string> row;
 
-		while (std::getline(lineStream, cell, chrType)) {
+		while
+		(
+			std::getline(lineStream, cell, chrType)
+		)
+		{
 			row.push_back(cell);
 		}
 
@@ -170,7 +191,9 @@ CustomModel readCSV
 		<< std::endl
 		<< std::endl;
 
-	int numline = 1;
+	int numline = 0;
+	int numcol = 0;
+
 	short int n_col = 0;
 	short int n_row = 0;
 
@@ -178,15 +201,40 @@ CustomModel readCSV
 		if (row.size()) {
 			std::cout << "line: " << numline << std::endl;
 
+			numline ++;
+
+			if (numline == 1) { continue; } //jump headers from csv file - continue next iteration
+
 			n_row ++;
+
+			numcol = 0;
 			n_col = 0;
 
 			for (const auto& value : row) {
+				numcol ++;
+
+				if (numcol == 1) { continue; } //jump date column from csv file - continue next iteration
+
 				n_col ++;
 
-				std::cout << "value: " << value << std::endl;
+				float value_f = std::stof(value);
 
-				values[n_row-1][n_col-1] = std::stof(value);
+				std::cout
+					<< "-------------------"
+					<< std::endl;
+
+				std::cout
+					<< "value:"
+					<< "["
+					<< value_f
+					<< "]"
+					<< std::endl;
+
+				values[ n_row - 1 ][ n_col - 1 ] = value_f;
+
+				std::cout
+					<< "-------------------"
+					<< std::endl;
 
 				//if (lnType == lineType::individual && n_col == column) {
 				//	std::cout
@@ -200,11 +248,8 @@ CustomModel readCSV
 			}
 
 			std::cout << std::endl;
-			numline ++;
 		}
 	}
-
-	std::cout << std::endl;
 
 	model = getModel(values);
 
@@ -214,7 +259,8 @@ CustomModel readCSV
 }
 
 int main(int argc, char *argv[]) {
-	const std::string filePath = "./source.csv";
+	//testing using real file history from Yahoo Finance 
+	const std::string filePath = "./apple-inc-appl.csv";
 	short int column;
 	lineType lnType;
 	splitType chrType;
@@ -239,7 +285,7 @@ int main(int argc, char *argv[]) {
 	//if (strcmp(paramLineType, "all") == 0) { lnType = lineType::all;  }
 	//if (strcmp(paramLineType, "individual") == 0) { lnType = lineType::individual; }
 
-	chrType = splitType::blankChar;
+	chrType = splitType::semicolon;
 	lnType = lineType::individual;
 	//column = paramColumn;
 	column = 1;
