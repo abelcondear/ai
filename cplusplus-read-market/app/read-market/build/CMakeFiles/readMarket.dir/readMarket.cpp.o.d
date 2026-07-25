@@ -1,5 +1,5 @@
 CMakeFiles/readMarket.dir/readMarket.cpp.o: \
- /home/scott/Documents/Me/Download/new/backend/cplusplus-read-market/app/read-market/readMarket.cpp \
+ /home/scott/Documents/Me/Download/new/ai/cplusplus-read-market/app/read-market/readMarket.cpp \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -4389,4 +4389,6 @@ CMakeFiles/readMarket.dir/readMarket.cpp.o: \
  /usr/include/torch/csrc/jit/frontend/strtod.h \
  /usr/include/torch/csrc/jit/frontend/schema_matching.h \
  /usr/include/torch/csrc/jit/frontend/versioned_symbols.h \
- /usr/include/torch/csrc/jit/frontend/tree_views.h
+ /usr/include/torch/csrc/jit/frontend/tree_views.h \
+ /usr/include/c++/15/cxxabi.h \
+ /usr/include/x86_64-linux-gnu/c++/15/bits/cxxabi_tweaks.h

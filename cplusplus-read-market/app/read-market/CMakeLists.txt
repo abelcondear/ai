@@ -7,6 +7,11 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+execute_process(
+   COMMAND cp ./readMarket.cpp ./build/
+   COMMAND cp ./apple-inc-appl.csv ./build/
+)
+
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
