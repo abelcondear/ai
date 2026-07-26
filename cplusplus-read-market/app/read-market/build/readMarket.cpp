@@ -12,6 +12,7 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <stdexcept>
+#include <array>
 
 struct CustomModel : torch::nn::Module {
 	torch::nn::Linear fc1{nullptr};
@@ -42,65 +43,212 @@ struct CustomModel : torch::nn::Module {
     	}
 };
 
-CustomModel getModel(std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values) {
+CustomModel getModel(
+	std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values
+) {
 	CustomModel model(
-		6, // 6 columns-fixed
-		values.size(),
+		43, // 43 column-fixed
+		1, // 1 row-fixed
 		1
 	);
 
-	// CustomModel ----
-	//  3=columns
-	//  5=rows
-    	//  1=depth
+	// CustomModel (example) ----
+	// 	3=columns
+	// 	5=rows
+    	// 	1=depth
     	// ---------------
+
+	std::vector<float> open_column;
+	std::vector<float> close_column;
+
+	float open_value = 0.0;
+	float close_value = 0.0;
+
+	std::vector<std::tuple<std::string, float, float, float, float, float, float>>::iterator g;
 
     	torch::Tensor input_tensor;
     	torch::Tensor input;
 
 	for (int x = 0; x < values.size(); x ++) { // read elements from values parameter
-    	//for (int x = 0; x < values.size(); x ++) {
+		g = values[x].begin(); // get vector item
 
-		std::vector<std::tuple<std::string, float, float, float, float, float, float>>::iterator g = values[x].begin(); // get vector item
+		open_value = std::get<1>(*g); // get tuple item
+		close_value = std::get<4>(*g); // get tuple item
 
-		std::string date_str = std::get<0>(*g); // get tuple item
-		float open_ft = std::get<1>(*g); // get tuple item
-		float high_ft = std::get<2>(*g); // get tuple item
-		float low_ft = std::get<3>(*g); // get tuple item
-		float close_ft = std::get<4>(*g); // get tuple item
-		float adj_ft = std::get<5>(*g); // get tuple item
-		float volumne_ft = std::get<6>(*g); // get tuple item
-
-		// then, onvert one column in a single parameters list
-        	input_tensor = torch::tensor(
-                	{
-				open_ft,
-				high_ft,
-				low_ft,
-				close_ft,
-				adj_ft,
-				volumne_ft
-                	},
-                	torch::kFloat32
-        	);
-
-	        std::cout << "--------------------------" << std::endl;
-        	std::cout << "input_tensor:" << std::endl;
-	        std::cout << input_tensor << std::endl;
-        	std::cout << "--------------------------" << std::endl;
-
-	        std::cout << std::endl;
-
-        	input = model.forward(input_tensor);
-
-	        std::cout << "--------------------------" << std::endl;
-        	std::cout << "input [after forward method calling]:" << std::endl;
-	        std::cout << input << std::endl;
-        	std::cout << "--------------------------" << std::endl;
-
-        	std::cout << std::endl;
-
+		open_column.push_back(open_value);
+		close_column.push_back(close_value);
     	}
+
+        input_tensor = torch::tensor(
+		{
+			// open value - from row 01 - 10
+
+			open_column[0],
+			open_column[1],
+			open_column[2],
+			open_column[3],
+			open_column[4],
+			open_column[5],
+			open_column[6],
+			open_column[7],
+			open_column[8],
+			open_column[9],
+
+			// open value - from row 11 - 20
+
+			open_column[10],
+			open_column[11],
+			open_column[12],
+			open_column[13],
+			open_column[14],
+			open_column[15],
+			open_column[16],
+			open_column[17],
+			open_column[18],
+			open_column[19],
+
+			// open value - from row 21 - 30
+
+			open_column[20],
+			open_column[21],
+			open_column[22],
+			open_column[23],
+			open_column[24],
+			open_column[25],
+			open_column[26],
+			open_column[27],
+			open_column[28],
+			open_column[29],
+
+			// open value - from row 31 - 40
+
+			open_column[30],
+			open_column[31],
+			open_column[32],
+			open_column[33],
+			open_column[34],
+			open_column[35],
+			open_column[36],
+			open_column[37],
+			open_column[38],
+			open_column[39],
+
+			// open value - from row 41 - 43
+
+			open_column[40],
+			open_column[41],
+			open_column[42]
+		},
+		torch::kFloat32
+	);
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "--------------------------" << std::endl;
+	std::cout << " open column " << std::endl;
+	std::cout << "--------------------------" << std::endl;
+
+	std::cout << "--------------------------" << std::endl;
+	std::cout << input_tensor << std::endl;
+	std::cout << "--------------------------" << std::endl;
+
+	std::cout << std::endl;
+
+        input = model.forward(input_tensor);
+
+	std::cout << "--------------------------" << std::endl;
+	std::cout << input << std::endl;
+	std::cout << "--------------------------" << std::endl;
+
+	// -------------------------------------------------------
+
+        input_tensor = torch::tensor(
+		{
+			// close value - from row 01 - 10
+
+			close_column[0],
+			close_column[1],
+			close_column[2],
+			close_column[3],
+			close_column[4],
+			close_column[5],
+			close_column[6],
+			close_column[7],
+			close_column[8],
+			close_column[9],
+
+			// close value - from row 11 - 20
+
+			close_column[10],
+			close_column[11],
+			close_column[12],
+			close_column[13],
+			close_column[14],
+			close_column[15],
+			close_column[16],
+			close_column[17],
+			close_column[18],
+			close_column[19],
+
+			// close value - from row 21 - 30
+
+			close_column[20],
+			close_column[21],
+			close_column[22],
+			close_column[23],
+			close_column[24],
+			close_column[25],
+			close_column[26],
+			close_column[27],
+			close_column[28],
+			close_column[29],
+
+			// close value - from row 31 - 40
+
+			close_column[30],
+			close_column[31],
+			close_column[32],
+			close_column[33],
+			close_column[34],
+			close_column[35],
+			close_column[36],
+			close_column[37],
+			close_column[38],
+			close_column[39],
+
+			// close value - from row 41 - 43
+
+			close_column[40],
+			close_column[41],
+			close_column[42]
+		},
+		torch::kFloat32
+	);
+
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "--------------------------" << std::endl;
+	std::cout << " close column " << std::endl;
+	std::cout << "--------------------------" << std::endl;
+
+	std::cout << "--------------------------" << std::endl;
+	std::cout << input_tensor << std::endl;
+	std::cout << "--------------------------" << std::endl;
+
+	std::cout << std::endl;
+
+        input = model.forward(input_tensor);
+
+	std::cout << "--------------------------" << std::endl;
+	std::cout << input << std::endl;
+	std::cout << "--------------------------" << std::endl;
+
+	// ---------------------------------------------------------
+
+	std::cout << std::endl;
+	std::cout << std::endl;
 
 	return model;
 }
@@ -145,8 +293,13 @@ CustomModel readCSV
 	//(configuration amount columns for numeric values)
 	int config_cols = 6;
 
-	//change values (fixed array) into values (dynamic array)
-	std::vector<std::vector<float>> values(config_rows, std::vector<float>(config_cols, 0.0f));
+	std::vector< std::vector< float > > values(
+						config_rows,
+						std::vector<float>(
+							config_cols,
+							0.0f
+						)
+					);
 
 	while (std::getline(file, line)) {
 		std::stringstream lineStream(line);
@@ -156,20 +309,19 @@ CustomModel readCSV
 		while
 		(
 			std::getline(lineStream, cell, chrType)
-		)
-		{
+		) {
 			row.push_back(cell);
 		}
 
 		rows.push_back(row);
 	}
 
-	std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> myArr;
-	std::vector<std::tuple<std::string, float, float, float, float, float, float>> rowArr;
+	std::vector< std::vector< std::tuple< std::string, float, float, float, float, float, float > > > myArr;
+	std::vector< std::tuple< std::string, float, float, float, float, float, float > > rowArr;
 
-	std::vector< std::vector< std::__cxx11::basic_string<char> > >::iterator itt_begin = rows.begin();
-	std::vector< std::vector< std::__cxx11::basic_string<char> > >::iterator itt_end = rows.end();
-	std::vector< std::vector< std::__cxx11::basic_string<char> > >::iterator itt = itt_begin;
+	std::vector< std::vector< std::__cxx11::basic_string< char > > >::iterator itt_begin = rows.begin();
+	std::vector< std::vector< std::__cxx11::basic_string< char > > >::iterator itt_end = rows.end();
+	std::vector< std::vector< std::__cxx11::basic_string< char > > >::iterator itt = itt_begin;
 
 	// get data type from auto variable type
 	std::string date_str;		// date column
@@ -187,12 +339,12 @@ CustomModel readCSV
 
 		if (row.size()) {
 			try {
-				//std::cout << "line-***: " << rowline << std::endl;
+				//std::cout << "line: " << rowline << std::endl;
 
 				if (rowline == numLines + 1) { break; }
 				// -------------------------------------
 
-				// header - csv file
+				// ** header **
 				// Date;Open;High;Low;Close;Adj-Close;Volume;
 
 				// -------------------------------------
@@ -246,8 +398,8 @@ CustomModel readCSV
 
 				myArr.push_back(rowArr);
 
-				//clean up before inserting new element
-				//empty rowArr (row of myArr)
+				// clean up before
+				// inserting new element
 				rowArr.erase(
 					rowArr.begin(),
 					rowArr.end()
@@ -256,15 +408,11 @@ CustomModel readCSV
 				std::cout << std::endl;
 			}
 			catch (const std::exception& e) {
-				//break; // stop for loop
 				continue;
 			}
 
 		}
 	}
-
-	std::cout << std::endl;
-	std::cout << std::endl;
 
 	file.close();
 
@@ -277,9 +425,6 @@ int main(int argc, char *argv[]) {
 	short int lnType = 1;
 	char chrType = ';';
 	int paramColumn = 1;
-
-	std::cout << std::endl;
-	std::cout << std::endl;
 
 	short int column = paramColumn;
 
