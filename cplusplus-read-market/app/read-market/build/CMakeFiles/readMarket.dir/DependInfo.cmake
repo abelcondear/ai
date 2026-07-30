@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/scott/Documents/Me/Download/new/ai/cplusplus-read-market/app/read-market/readMarket.cpp" "CMakeFiles/readMarket.dir/readMarket.cpp.o" "gcc" "CMakeFiles/readMarket.dir/readMarket.cpp.o.d"
+  "/home/scott/Documents/Me/Download/new/backend/cplusplus-read-market/app/read-market/readMarket.cpp" "CMakeFiles/readMarket.dir/readMarket.cpp.o" "gcc" "CMakeFiles/readMarket.dir/readMarket.cpp.o.d"
   "" "readMarket" "gcc" "CMakeFiles/readMarket.dir/link.d"
   )
 
