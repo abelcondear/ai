@@ -1,5 +1,5 @@
 CMakeFiles/readMarket.dir/readMarket.cpp.o: \
- /home/scott/Documents/Me/Download/new/backend/cplusplus-read-market/app/read-market/readMarket.cpp \
+ /home/scott/Documents/Me/Download/new/ai/cplusplus-read-market/app/read-market/readMarket.cpp \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \

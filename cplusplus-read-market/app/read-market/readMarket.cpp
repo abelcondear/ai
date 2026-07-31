@@ -53,12 +53,8 @@ struct CustomModel : torch::nn::Module {
      }
 
      torch::Tensor forward(torch::Tensor x) {
-             //convert all tensor elements
-             //to float type by default
              x = x.to(torch::kFloat32);
 
-             //convert it into one dimension
-             //before executing forward method
              x = x.reshape(x.sizes());
 
              x = torch::relu(fc1->forward(x));
@@ -73,9 +69,9 @@ CustomModel getModel(
      std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values
 ) {
      CustomModel model(
-             43,	// 43 columns-fixed
-             1,	// 1 row-fixed
-             1	// 1 depth
+             43, // 43 columns-fixed
+             1, // 1 row-fixed
+             1 // 1 depth
      );
 
      std::vector<float> open_column;
@@ -89,7 +85,7 @@ CustomModel getModel(
      torch::Tensor input_tensor;
      torch::Tensor input;
 
-     for (int x = 0; x < values.size(); x ++) {
+	for (int x = 0; x < values.size(); x ++) {
 		g = values[x].begin();
 
 		open_value = std::get<1>(*g);
@@ -103,56 +99,56 @@ CustomModel getModel(
 
 	input_tensor = torch::tensor(
 		{
-		open_column[0],
-		open_column[1],
-		open_column[2],
-		open_column[3],
-		open_column[4],
-		open_column[5],
-		open_column[6],
-		open_column[7],
-		open_column[8],
-		open_column[9],
-		open_column[10],
-		open_column[11],
-		open_column[12],
-		open_column[13],
-		open_column[14],
-		open_column[15],
-		open_column[16],
-		open_column[17],
-		open_column[18],
-		open_column[19],
-		open_column[20],
-		open_column[21],
-		open_column[22],
-		open_column[23],
-		open_column[24],
-		open_column[25],
-		open_column[26],
-		open_column[27],
-		open_column[28],
-		open_column[29],
-		open_column[30],
-		open_column[31],
-		open_column[32],
-		open_column[33],
-		open_column[34],
-		open_column[35],
-		open_column[36],
-		open_column[37],
-		open_column[38],
-		open_column[39],
-		open_column[40],
-		open_column[41],
-		open_column[42]
+			open_column[0],
+			open_column[1],
+			open_column[2],
+			open_column[3],
+			open_column[4],
+			open_column[5],
+			open_column[6],
+			open_column[7],
+			open_column[8],
+			open_column[9],
+			open_column[10],
+			open_column[11],
+			open_column[12],
+			open_column[13],
+			open_column[14],
+			open_column[15],
+			open_column[16],
+			open_column[17],
+			open_column[18],
+			open_column[19],
+			open_column[20],
+			open_column[21],
+			open_column[22],
+			open_column[23],
+			open_column[24],
+			open_column[25],
+			open_column[26],
+			open_column[27],
+			open_column[28],
+			open_column[29],
+			open_column[30],
+			open_column[31],
+			open_column[32],
+			open_column[33],
+			open_column[34],
+			open_column[35],
+			open_column[36],
+			open_column[37],
+			open_column[38],
+			open_column[39],
+			open_column[40],
+			open_column[41],
+			open_column[42]
 		},
 		torch::kFloat32
 	);
 
      std::cout << "//--------------------------" << std::endl;
      std::cout << "// open column" << std::endl;
-     std::cout << "//--------------------------" << std::endl;
+     std::cout << "//--------------------------"  << std::endl;
 
      std::cout << "//--------------------------" << std::endl;
      std::cout << input_tensor << std::endl;
@@ -170,52 +166,52 @@ CustomModel getModel(
 
 	input_tensor = torch::tensor(
      	{
-		close_column[0],
-		close_column[1],
-		close_column[2],
-		close_column[3],
-		close_column[4],
-		close_column[5],
-		close_column[6],
-		close_column[7],
-		close_column[8],
-		close_column[9],
-		close_column[10],
-		close_column[11],
-		close_column[12],
-		close_column[13],
-		close_column[14],
-		close_column[15],
-		close_column[16],
-		close_column[17],
-		close_column[18],
-		close_column[19],
-		close_column[20],
-		close_column[21],
-		close_column[22],
-		close_column[23],
-		close_column[24],
-		close_column[25],
-		close_column[26],
-		close_column[27],
-		close_column[28],
-		close_column[29],
-		close_column[30],
-		close_column[31],
-		close_column[32],
-		close_column[33],
-		close_column[34],
-		close_column[35],
-		close_column[36],
-		close_column[37],
-		close_column[38],
-		close_column[39],
-		close_column[40],
-		close_column[41],
-		close_column[42]
+			close_column[0],
+			close_column[1],
+			close_column[2],
+			close_column[3],
+			close_column[4],
+			close_column[5],
+			close_column[6],
+			close_column[7],
+			close_column[8],
+			close_column[9],
+			close_column[10],
+			close_column[11],
+			close_column[12],
+			close_column[13],
+			close_column[14],
+			close_column[15],
+			close_column[16],
+			close_column[17],
+			close_column[18],
+			close_column[19],
+			close_column[20],
+			close_column[21],
+			close_column[22],
+			close_column[23],
+			close_column[24],
+			close_column[25],
+			close_column[26],
+			close_column[27],
+			close_column[28],
+			close_column[29],
+			close_column[30],
+			close_column[31],
+			close_column[32],
+			close_column[33],
+			close_column[34],
+			close_column[35],
+			close_column[36],
+			close_column[37],
+			close_column[38],
+			close_column[39],
+			close_column[40],
+			close_column[41],
+			close_column[42]
 		},
      	torch::kFloat32
-);
+	);
 
      std::cout << "//--------------------------" << std::endl;
      std::cout << "// close column " << std::endl;
@@ -315,7 +311,7 @@ CustomModel readCSV
 
              if (row.size()) {
                      try {
-                             std::cout << "line: " << rowline << std::endl;
+                             //std::cout << "line: " << rowline << std::endl;
 
                              if (rowline == numLines + 1) { break; }
 
@@ -364,7 +360,7 @@ CustomModel readCSV
                                      rowArr.end()
                              );
 
-                             std::cout << std::endl;
+                             //std::cout << std::endl;
                      }
                      catch (const std::exception& e) {
                              continue;

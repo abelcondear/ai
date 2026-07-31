@@ -9,7 +9,11 @@ int main(int argc, char** argv) {
     std::ofstream outputFile("readMarket.cpp");
 
     char slash = 47; // "/" slash
+    char quote = 34; // '"' quote
+
     int amount_tensor = std::stoi(argv[1]);
+
+    // ----------------------------------------
 
     if (!outputFile.is_open()) {
         std::cerr << "Error: Could not create or open the file." << std::endl;
@@ -83,12 +87,8 @@ int main(int argc, char** argv) {
     outputFile << "     }" << std::endl;
     outputFile << std::endl;
     outputFile << "     torch::Tensor forward(torch::Tensor x) {" << std::endl;
-    outputFile << "             //convert all tensor elements" << std::endl;
-    outputFile << "             //to float type by default" << std::endl;
     outputFile << "             x = x.to(torch::kFloat32);" << std::endl;
     outputFile << std::endl;
-    outputFile << "             //convert it into one dimension" << std::endl;
-    outputFile << "             //before executing forward method" << std::endl;
     outputFile << "             x = x.reshape(x.sizes());" << std::endl;
     outputFile << std::endl;
     outputFile << "             x = torch::relu(fc1->forward(x));" << std::endl;
@@ -104,14 +104,15 @@ int main(int argc, char** argv) {
     outputFile << std::endl;
 
     // --------------------------------------------------
+    // CustomModel :: getModel  - BEGIN
 
     outputFile << "CustomModel getModel(" << std::endl;
     outputFile << "     std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values" << std::endl;
     outputFile << ") {" << std::endl;
     outputFile << "     CustomModel model(" << std::endl;
-    outputFile << "             43,	" << slash << slash << " 43 columns-fixed" << std::endl;
-    outputFile << "             1,	" << slash << slash << " 1 row-fixed" << std::endl;
-    outputFile << "             1	" << slash << slash << " 1 depth" << std::endl;
+    outputFile << "             43, " << slash << slash << " 43 columns-fixed" << std::endl;
+    outputFile << "             1, " << slash << slash << " 1 row-fixed" << std::endl;
+    outputFile << "             1 " << slash << slash << " 1 depth" << std::endl;
     outputFile << "     );" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::vector<float> open_column;" << std::endl;
@@ -125,7 +126,7 @@ int main(int argc, char** argv) {
     outputFile << "     torch::Tensor input_tensor;" << std::endl;
     outputFile << "     torch::Tensor input;" << std::endl;
     outputFile << std::endl;
-    outputFile << "     for (int x = 0; x < values.size(); x ++) {" << std::endl;
+    outputFile << "	for (int x = 0; x < values.size(); x ++) {" << std::endl;
     outputFile << "		g = values[x].begin();" << std::endl;
     outputFile << std::endl;
     outputFile << "		open_value = std::get<1>(*g);" << std::endl;
@@ -152,9 +153,13 @@ int main(int argc, char** argv) {
 
     for (int index = 0; index < amount_tensor; index ++) {
         if (index + 1 == amount_tensor) {
-                outputFile << "		open_column[" << index << "]" << std::endl;
+
+    outputFile << "			open_column[" << index << "]" << std::endl;
+
         } else {
-                outputFile << "		open_column[" << index << "]," << std::endl;
+
+     outputFile << "			open_column[" << index << "]," << std::endl;
+
         }
     }
 
@@ -162,21 +167,21 @@ int main(int argc, char** argv) {
     outputFile << "		torch::kFloat32" << std::endl;
     outputFile << "	);" << std::endl;
     outputFile << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << " open column" << "\" << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << " open column" << quote << " << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << "  << std::endl;" << std::endl;
     outputFile << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << "     std::cout << input_tensor << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << "     input = model.forward(input_tensor);" << std::endl;
     outputFile << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote  << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << "     std::cout << input << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
 
     // --------------------------------------------------
@@ -199,31 +204,35 @@ int main(int argc, char** argv) {
 
     for (int index = 0; index < amount_tensor; index ++) {
         if ((index + 1) == amount_tensor) {
-                outputFile << "		close_column[" << index << "]" << std::endl;
+
+    outputFile << "			close_column[" << index << "]" << std::endl;
+
         } else {
-                outputFile << "		close_column[" << index << "]," << std::endl;
+
+    outputFile << "			close_column[" << index << "]," << std::endl;
+
         }
     }
 
     outputFile << "		}," << std::endl;
     outputFile << "     	torch::kFloat32" << std::endl;
-    outputFile << ");" << std::endl;
+    outputFile << "	);" << std::endl;
     outputFile << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << " close column \" << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << " close column \" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << "     std::cout << input_tensor << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << "     input = model.forward(input_tensor);" << std::endl;
     outputFile << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << "     std::cout << input << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << "\"" << slash << slash << "--------------------------" << "\" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << std::endl;" << std::endl;
@@ -232,7 +241,7 @@ int main(int argc, char** argv) {
     outputFile << "     return model;" << std::endl;
     outputFile << "}" << std::endl;
 
-    // --------------------------------------------------
+    // CustomModel :: getModel  - END
     // --------------------------------------------------
 
 
@@ -320,7 +329,7 @@ int main(int argc, char** argv) {
     outputFile << std::endl;
     outputFile << "             if (row.size()) {" << std::endl;
     outputFile << "                     try {" << std::endl;
-    outputFile << "                             std::cout << \"line: \" << rowline << std::endl;" << std::endl;
+    outputFile << "                             " << slash << slash << "std::cout << \"line: \" << rowline << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << "                             if (rowline == numLines + 1) { break; }" << std::endl;
     outputFile << std::endl;
@@ -369,7 +378,7 @@ int main(int argc, char** argv) {
     outputFile << "                                     rowArr.end()" << std::endl;
     outputFile << "                             );" << std::endl;
     outputFile << std::endl;
-    outputFile << "                             std::cout << std::endl;" << std::endl;
+    outputFile << "                             " << slash << slash << "std::cout << std::endl;" << std::endl;
     outputFile << "                     }" << std::endl;
     outputFile << "                     catch (const std::exception& e) {" << std::endl;
     outputFile << "                             continue;" << std::endl;
@@ -400,7 +409,7 @@ int main(int argc, char** argv) {
     // --------------------------------------------------
 
     outputFile << "int main(int argc, char *argv[]) {" << std::endl;
-    outputFile << "     const std::string filePath = \"./apple-inc-appl.csv\";" << std::endl;
+    outputFile << "     const std::string filePath = " << quote << "./apple-inc-appl.csv" << quote << ";" << std::endl;
     outputFile << std::endl;
     outputFile << "     short int lnType = 1;" << std::endl;
     outputFile << "     char chrType = ';';" << std::endl;
