@@ -17,6 +17,22 @@
 #include <sys/wait.h>
 
 
+std::string nextDate(const std::string date_str) {
+    std::tm tm = {};
+    std::stringstream ss(date_str);
+
+    ss >> std::get_time(&tm, "%m/%d/%y");
+
+    tm.tm_mday += 1;
+
+    // fixes overflows like Aug 32 -> Sep 1
+    std::mktime(&tm);
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%m/%d/%y");
+
+    return oss.str();
+}
 std::string exec(const char* cmd) {
      std::array<char, 128> buffer;
      std::string result;
@@ -76,9 +92,11 @@ CustomModel getModel(
 
      std::vector<float> open_column;
      std::vector<float> close_column;
+     std::vector<std::string> date_column;
 
      float open_value = 0.0;
      float close_value = 0.0;
+     std::string date_value = "";
 
      std::vector<std::tuple<std::string, float, float, float, float, float, float>>::iterator g;
 
@@ -88,9 +106,11 @@ CustomModel getModel(
 	for (int x = 0; x < values.size(); x ++) {
 		g = values[x].begin();
 
+		date_value = std::get<0>(*g);
 		open_value = std::get<1>(*g);
 		close_value = std::get<4>(*g);
 
+		date_column.push_back(date_value);
 		open_column.push_back(open_value);
 		close_column.push_back(close_value);
 	}
@@ -159,7 +179,8 @@ CustomModel getModel(
      input = model.forward(input_tensor);
 
      std::cout << "//--------------------------" << std::endl;
-     std::cout << input << std::endl;
+     std::cout << "	"<< nextDate(date_column[date_column.size()-1]) << std::endl;
+     std::cout << "	"<< input  << std::endl;
      std::cout << "//--------------------------" << std::endl;
 
 
@@ -226,7 +247,8 @@ CustomModel getModel(
      input = model.forward(input_tensor);
 
      std::cout << "//--------------------------" << std::endl;
-     std::cout << input << std::endl;
+     std::cout << "	"<< nextDate(date_column[date_column.size()-1]) << std::endl;
+     std::cout << "	"<< input << std::endl;
      std::cout << "//--------------------------" << std::endl;
 
 

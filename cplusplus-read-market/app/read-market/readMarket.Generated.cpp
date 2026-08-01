@@ -6,7 +6,11 @@
 #include <cstring>
 
 int main(int argc, char** argv) {
+    // ----------------------------------------
+
     std::ofstream outputFile("readMarket.cpp");
+
+    // ----------------------------------------
 
     char slash = 47; // "/" slash
     char quote = 34; // '"' quote
@@ -42,6 +46,28 @@ int main(int argc, char** argv) {
 
     outputFile << std::endl;
     outputFile << std::endl;
+
+    // ----------------------------------------
+
+    outputFile << "std::string nextDate(const std::string date_str) {"  << std::endl;
+    outputFile << "    std::tm tm = {};" << std::endl;
+    outputFile << "    std::stringstream ss(date_str);" << std::endl;
+    outputFile << std::endl;
+    outputFile << "    ss >> std::get_time(&tm, \"%m/%d/%y\");" << std::endl;
+    outputFile << std::endl;
+    outputFile << "    tm.tm_mday += 1;" << std::endl;
+    outputFile << std::endl;
+    outputFile << "    " << slash << slash << " fixes overflows like Aug 32 -> Sep 1" << std::endl;
+    outputFile << "    std::mktime(&tm);" << std::endl;
+    outputFile << std::endl;
+    outputFile << "    std::ostringstream oss;" << std::endl;
+    outputFile << "    oss << std::put_time(&tm, \"%m/%d/%y\");" << std::endl;
+    outputFile << std::endl;
+    outputFile << "    return oss.str();" << std::endl;
+    outputFile << "}" << std::endl;
+
+    // ----------------------------------------
+
 
     // ----------------------------------------
 
@@ -117,9 +143,11 @@ int main(int argc, char** argv) {
     outputFile << std::endl;
     outputFile << "     std::vector<float> open_column;" << std::endl;
     outputFile << "     std::vector<float> close_column;" << std::endl;
+    outputFile << "     std::vector<std::string> date_column;" << std::endl;
     outputFile << std::endl;
     outputFile << "     float open_value = 0.0;" << std::endl;
     outputFile << "     float close_value = 0.0;" << std::endl;
+    outputFile << "     std::string date_value = \"\";" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::vector<std::tuple<std::string, float, float, float, float, float, float>>::iterator g;" << std::endl;
     outputFile << std::endl;
@@ -129,9 +157,11 @@ int main(int argc, char** argv) {
     outputFile << "	for (int x = 0; x < values.size(); x ++) {" << std::endl;
     outputFile << "		g = values[x].begin();" << std::endl;
     outputFile << std::endl;
+    outputFile << "		date_value = std::get<0>(*g);" << std::endl;
     outputFile << "		open_value = std::get<1>(*g);" << std::endl;
     outputFile << "		close_value = std::get<4>(*g);" << std::endl;
     outputFile << std::endl;
+    outputFile << "		date_column.push_back(date_value);" << std::endl;
     outputFile << "		open_column.push_back(open_value);" << std::endl;
     outputFile << "		close_column.push_back(close_value);" << std::endl;
     outputFile << "	}" << std::endl;
@@ -180,7 +210,8 @@ int main(int argc, char** argv) {
     outputFile << "     input = model.forward(input_tensor);" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote  << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
-    outputFile << "     std::cout << input << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << "	" << quote << "<< nextDate(date_column[date_column.size()-1]) << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << "	" << quote << "<< input  << std::endl;" << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
 
@@ -219,7 +250,7 @@ int main(int argc, char** argv) {
     outputFile << "	);" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << quote << slash << slash << " close column \" << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << " close column " << quote << " << std::endl;" << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
@@ -231,7 +262,8 @@ int main(int argc, char** argv) {
     outputFile << "     input = model.forward(input_tensor);" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
-    outputFile << "     std::cout << input << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << "	" << quote << "<< nextDate(date_column[date_column.size()-1]) << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << "	" << quote << "<< input << std::endl;" << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << std::endl;
