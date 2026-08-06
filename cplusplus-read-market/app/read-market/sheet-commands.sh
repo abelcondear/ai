@@ -12,7 +12,7 @@
 #  cp readMarket.cpp ./build/ && cmake --build ./build --config Release && ./build/readMarket > output.log && nano output.log
 #
 #  g++ readMarket.Generated.cpp -o readMarket.Generated
-#  ./readMarket.Generated
+#  ./readMarket.Generated 5 ";"
 #
 # ---------------------------
 
