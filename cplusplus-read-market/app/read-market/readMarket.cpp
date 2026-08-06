@@ -17,22 +17,6 @@
 #include <sys/wait.h>
 
 
-std::string nextDate(const std::string date_str) {
-    std::tm tm = {};
-    std::stringstream ss(date_str);
-
-    ss >> std::get_time(&tm, "%m/%d/%y");
-
-    tm.tm_mday += 1;
-
-    // fixes overflows like Aug 32 -> Sep 1
-    std::mktime(&tm);
-
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%m/%d/%y");
-
-    return oss.str();
-}
 std::string exec(const char* cmd) {
      std::array<char, 128> buffer;
      std::string result;
@@ -82,21 +66,20 @@ struct CustomModel : torch::nn::Module {
 
 
 CustomModel getModel(
-     std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values
+     std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values,
+     const int amountRows
 ) {
      CustomModel model(
-             43, // 43 columns-fixed
+             amountRows, // amount rows-fixed
              1, // 1 row-fixed
              1 // 1 depth
      );
 
      std::vector<float> open_column;
      std::vector<float> close_column;
-     std::vector<std::string> date_column;
 
      float open_value = 0.0;
      float close_value = 0.0;
-     std::string date_value = "";
 
      std::vector<std::tuple<std::string, float, float, float, float, float, float>>::iterator g;
 
@@ -106,11 +89,9 @@ CustomModel getModel(
 	for (int x = 0; x < values.size(); x ++) {
 		g = values[x].begin();
 
-		date_value = std::get<0>(*g);
 		open_value = std::get<1>(*g);
 		close_value = std::get<4>(*g);
 
-		date_column.push_back(date_value);
 		open_column.push_back(open_value);
 		close_column.push_back(close_value);
 	}
@@ -123,45 +104,7 @@ CustomModel getModel(
 			open_column[1],
 			open_column[2],
 			open_column[3],
-			open_column[4],
-			open_column[5],
-			open_column[6],
-			open_column[7],
-			open_column[8],
-			open_column[9],
-			open_column[10],
-			open_column[11],
-			open_column[12],
-			open_column[13],
-			open_column[14],
-			open_column[15],
-			open_column[16],
-			open_column[17],
-			open_column[18],
-			open_column[19],
-			open_column[20],
-			open_column[21],
-			open_column[22],
-			open_column[23],
-			open_column[24],
-			open_column[25],
-			open_column[26],
-			open_column[27],
-			open_column[28],
-			open_column[29],
-			open_column[30],
-			open_column[31],
-			open_column[32],
-			open_column[33],
-			open_column[34],
-			open_column[35],
-			open_column[36],
-			open_column[37],
-			open_column[38],
-			open_column[39],
-			open_column[40],
-			open_column[41],
-			open_column[42]
+			open_column[4]
 		},
 		torch::kFloat32
 	);
@@ -179,8 +122,7 @@ CustomModel getModel(
      input = model.forward(input_tensor);
 
      std::cout << "//--------------------------" << std::endl;
-     std::cout << "	"<< nextDate(date_column[date_column.size()-1]) << std::endl;
-     std::cout << "	"<< input  << std::endl;
+     std::cout << input << std::endl;
      std::cout << "//--------------------------" << std::endl;
 
 
@@ -191,45 +133,7 @@ CustomModel getModel(
 			close_column[1],
 			close_column[2],
 			close_column[3],
-			close_column[4],
-			close_column[5],
-			close_column[6],
-			close_column[7],
-			close_column[8],
-			close_column[9],
-			close_column[10],
-			close_column[11],
-			close_column[12],
-			close_column[13],
-			close_column[14],
-			close_column[15],
-			close_column[16],
-			close_column[17],
-			close_column[18],
-			close_column[19],
-			close_column[20],
-			close_column[21],
-			close_column[22],
-			close_column[23],
-			close_column[24],
-			close_column[25],
-			close_column[26],
-			close_column[27],
-			close_column[28],
-			close_column[29],
-			close_column[30],
-			close_column[31],
-			close_column[32],
-			close_column[33],
-			close_column[34],
-			close_column[35],
-			close_column[36],
-			close_column[37],
-			close_column[38],
-			close_column[39],
-			close_column[40],
-			close_column[41],
-			close_column[42]
+			close_column[4]
 		},
      	torch::kFloat32
 	);
@@ -247,8 +151,7 @@ CustomModel getModel(
      input = model.forward(input_tensor);
 
      std::cout << "//--------------------------" << std::endl;
-     std::cout << "	"<< nextDate(date_column[date_column.size()-1]) << std::endl;
-     std::cout << "	"<< input << std::endl;
+     std::cout << input << std::endl;
      std::cout << "//--------------------------" << std::endl;
 
 
@@ -264,7 +167,7 @@ CustomModel readCSV
      const std::string& filePath,
      const char chrType,
      const short int lnType,
-     const short int column
+     const int amountRows
 ) {
      CustomModel model(1, 1, 1);
 
@@ -396,7 +299,10 @@ CustomModel readCSV
 
      file.close();
 
-     return getModel(myArr);
+     return getModel(
+         myArr,
+         amountRows
+     );
 }
 
 
@@ -404,14 +310,14 @@ int main(int argc, char *argv[]) {
      const std::string filePath = "./apple-inc-appl.csv";
 
      short int lnType = 1;
-     char chrType = ';';
-     int paramColumn = 1;
+     char paramDelimiter = ';';
+     int paramRows = 5;
 
      std::cout << std::endl;
 
-     short int column = paramColumn;
+     int amountRows  = paramRows;
 
-     CustomModel model = readCSV(filePath, chrType, lnType, column);
+     CustomModel model = readCSV(filePath, paramDelimiter, lnType, amountRows);
 
      return 0;
 }

@@ -6,8 +6,6 @@
 #include <cstring>
 
 int main(int argc, char** argv) {
-    // ----------------------------------------
-
     std::ofstream outputFile("readMarket.cpp");
 
     // ----------------------------------------
@@ -15,7 +13,10 @@ int main(int argc, char** argv) {
     char slash = 47; // "/" slash
     char quote = 34; // '"' quote
 
+    // ----------------------------------------
+
     int amount_tensor = std::stoi(argv[1]);
+    char delimiter = *argv[2];
 
     // ----------------------------------------
 
@@ -25,6 +26,7 @@ int main(int argc, char** argv) {
     }
 
     // ----------------------------------------
+    // libraries - BEGIN
 
     outputFile << "#include <stdio.h>" << std::endl;
     outputFile << "#include <torch/torch.h>" << std::endl;
@@ -44,32 +46,14 @@ int main(int argc, char** argv) {
     outputFile << "#include <unistd.h>" << std::endl;
     outputFile << "#include <sys/wait.h>" << std::endl;
 
+    // libraries - END
+    // ----------------------------------------
+
     outputFile << std::endl;
     outputFile << std::endl;
 
     // ----------------------------------------
-
-    outputFile << "std::string nextDate(const std::string date_str) {"  << std::endl;
-    outputFile << "    std::tm tm = {};" << std::endl;
-    outputFile << "    std::stringstream ss(date_str);" << std::endl;
-    outputFile << std::endl;
-    outputFile << "    ss >> std::get_time(&tm, \"%m/%d/%y\");" << std::endl;
-    outputFile << std::endl;
-    outputFile << "    tm.tm_mday += 1;" << std::endl;
-    outputFile << std::endl;
-    outputFile << "    " << slash << slash << " fixes overflows like Aug 32 -> Sep 1" << std::endl;
-    outputFile << "    std::mktime(&tm);" << std::endl;
-    outputFile << std::endl;
-    outputFile << "    std::ostringstream oss;" << std::endl;
-    outputFile << "    oss << std::put_time(&tm, \"%m/%d/%y\");" << std::endl;
-    outputFile << std::endl;
-    outputFile << "    return oss.str();" << std::endl;
-    outputFile << "}" << std::endl;
-
-    // ----------------------------------------
-
-
-    // ----------------------------------------
+    // function exec - BEGIN
 
     outputFile << "std::string exec(const char* cmd) {" << std::endl;
     outputFile << "     std::array<char, 128> buffer;" << std::endl;
@@ -92,12 +76,14 @@ int main(int argc, char** argv) {
     outputFile << "     return result;" << std::endl;
     outputFile << "}" << std::endl;
 
+    // function exec - END
     // --------------------------------------------------
 
     outputFile << std::endl;
     outputFile << std::endl;
 
     // --------------------------------------------------
+    // struct CustomModel - BEGIN
 
     outputFile << "struct CustomModel : torch::nn::Module {" << std::endl;
     outputFile << "     torch::nn::Linear fc1{nullptr};" << std::endl;
@@ -124,30 +110,30 @@ int main(int argc, char** argv) {
     outputFile << "     }" << std::endl;
     outputFile << "};" << std::endl;
 
+    // struct CustomModel - END
     // --------------------------------------------------
 
     outputFile << std::endl;
     outputFile << std::endl;
 
     // --------------------------------------------------
-    // CustomModel :: getModel  - BEGIN
+    // function getModel - BEGIN
 
     outputFile << "CustomModel getModel(" << std::endl;
-    outputFile << "     std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values" << std::endl;
+    outputFile << "     std::vector<std::vector<std::tuple<std::string, float, float, float, float, float, float>>> values," << std::endl;  
+    outputFile << "     const int amountRows" << std::endl;
     outputFile << ") {" << std::endl;
     outputFile << "     CustomModel model(" << std::endl;
-    outputFile << "             43, " << slash << slash << " 43 columns-fixed" << std::endl;
+    outputFile << "             amountRows, " << slash << slash << " amount rows-fixed" << std::endl;
     outputFile << "             1, " << slash << slash << " 1 row-fixed" << std::endl;
     outputFile << "             1 " << slash << slash << " 1 depth" << std::endl;
     outputFile << "     );" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::vector<float> open_column;" << std::endl;
     outputFile << "     std::vector<float> close_column;" << std::endl;
-    outputFile << "     std::vector<std::string> date_column;" << std::endl;
     outputFile << std::endl;
     outputFile << "     float open_value = 0.0;" << std::endl;
     outputFile << "     float close_value = 0.0;" << std::endl;
-    outputFile << "     std::string date_value = \"\";" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::vector<std::tuple<std::string, float, float, float, float, float, float>>::iterator g;" << std::endl;
     outputFile << std::endl;
@@ -157,11 +143,9 @@ int main(int argc, char** argv) {
     outputFile << "	for (int x = 0; x < values.size(); x ++) {" << std::endl;
     outputFile << "		g = values[x].begin();" << std::endl;
     outputFile << std::endl;
-    outputFile << "		date_value = std::get<0>(*g);" << std::endl;
     outputFile << "		open_value = std::get<1>(*g);" << std::endl;
     outputFile << "		close_value = std::get<4>(*g);" << std::endl;
     outputFile << std::endl;
-    outputFile << "		date_column.push_back(date_value);" << std::endl;
     outputFile << "		open_column.push_back(open_value);" << std::endl;
     outputFile << "		close_column.push_back(close_value);" << std::endl;
     outputFile << "	}" << std::endl;
@@ -176,7 +160,7 @@ int main(int argc, char** argv) {
 
 
     // --------------------------------------------------
-    // --------------------------------------------------
+    // tensor::open_column - BEGIN
 
     outputFile << "	input_tensor = torch::tensor(" << std::endl;
     outputFile << "		{" << std::endl;
@@ -188,7 +172,7 @@ int main(int argc, char** argv) {
 
         } else {
 
-     outputFile << "			open_column[" << index << "]," << std::endl;
+    outputFile << "			open_column[" << index << "]," << std::endl;
 
         }
     }
@@ -210,12 +194,11 @@ int main(int argc, char** argv) {
     outputFile << "     input = model.forward(input_tensor);" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote  << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << quote << "	" << quote << "<< nextDate(date_column[date_column.size()-1]) << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << quote << "	" << quote << "<< input  << std::endl;" << std::endl;
+    outputFile << "     std::cout << input << std::endl;" << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
 
-    // --------------------------------------------------
+    // tensor::open_column - END
     // --------------------------------------------------
 
 
@@ -228,7 +211,7 @@ int main(int argc, char** argv) {
 
 
     // --------------------------------------------------
-    // --------------------------------------------------
+    // tensor::close_column - BEGIN
 
     outputFile << "	input_tensor = torch::tensor(" << std::endl;
     outputFile << "     	{" << std::endl;
@@ -250,7 +233,7 @@ int main(int argc, char** argv) {
     outputFile << "	);" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << quote << slash << slash << " close column " << quote << " << std::endl;" << std::endl;
+    outputFile << "     std::cout << " << quote << slash << slash << " close column \" << std::endl;" << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
@@ -262,8 +245,7 @@ int main(int argc, char** argv) {
     outputFile << "     input = model.forward(input_tensor);" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << quote << "	" << quote << "<< nextDate(date_column[date_column.size()-1]) << std::endl;" << std::endl;
-    outputFile << "     std::cout << " << quote << "	" << quote << "<< input << std::endl;" << std::endl;
+    outputFile << "     std::cout << input << std::endl;" << std::endl;
     outputFile << "     std::cout << " << quote << slash << slash << "--------------------------" << quote << " << std::endl;" << std::endl;
     outputFile << std::endl;
     outputFile << std::endl;
@@ -273,7 +255,7 @@ int main(int argc, char** argv) {
     outputFile << "     return model;" << std::endl;
     outputFile << "}" << std::endl;
 
-    // CustomModel :: getModel  - END
+    // tensor::close_column - END
     // --------------------------------------------------
 
 
@@ -286,13 +268,14 @@ int main(int argc, char** argv) {
 
 
     // --------------------------------------------------
+    // function readCSV - BEGIN
 
     outputFile << "CustomModel readCSV" << std::endl;
     outputFile << "(" << std::endl;
     outputFile << "     const std::string& filePath," << std::endl;
     outputFile << "     const char chrType," << std::endl;
     outputFile << "     const short int lnType," << std::endl;
-    outputFile << "     const short int column" << std::endl;
+    outputFile << "     const int amountRows" << std::endl;
     outputFile << ") {" << std::endl;
     outputFile << "     CustomModel model(1, 1, 1);" << std::endl;
     outputFile << std::endl;
@@ -424,9 +407,13 @@ int main(int argc, char** argv) {
     outputFile << std::endl;
     outputFile << "     file.close();" << std::endl;
     outputFile << std::endl;
-    outputFile << "     return getModel(myArr);" << std::endl;
+    outputFile << "     return getModel(" << std::endl;
+    outputFile << "         myArr," << std::endl;
+    outputFile << "         amountRows" << std::endl;
+    outputFile << "     );" << std::endl;
     outputFile << "}" << std::endl;
 
+    // function readCSV - END
     // --------------------------------------------------
 
 
@@ -439,23 +426,25 @@ int main(int argc, char** argv) {
 
 
     // --------------------------------------------------
+    // function main - BEGIN
 
     outputFile << "int main(int argc, char *argv[]) {" << std::endl;
     outputFile << "     const std::string filePath = " << quote << "./apple-inc-appl.csv" << quote << ";" << std::endl;
     outputFile << std::endl;
     outputFile << "     short int lnType = 1;" << std::endl;
-    outputFile << "     char chrType = ';';" << std::endl;
-    outputFile << "     int paramColumn = 1;" << std::endl;
+    outputFile << "     char paramDelimiter = '" << delimiter << "';" << std::endl;
+    outputFile << "     int paramRows = " << amount_tensor << ";" << std::endl;
     outputFile << std::endl;
     outputFile << "     std::cout << std::endl;" << std::endl;
     outputFile << std::endl;
-    outputFile << "     short int column = paramColumn;" << std::endl;
+    outputFile << "     int amountRows  = paramRows;" << std::endl;
     outputFile << std::endl;
-    outputFile << "     CustomModel model = readCSV(filePath, chrType, lnType, column);" << std::endl;
+    outputFile << "     CustomModel model = readCSV(filePath, paramDelimiter, lnType, amountRows);" << std::endl;
     outputFile << std::endl;
     outputFile << "     return 0;" << std::endl;
     outputFile << "}" << std::endl;
 
+    // function main - END
     // --------------------------------------------------
 
     outputFile << std::endl;
